@@ -189,7 +189,7 @@ REGEX_GROUP
 	: R_ E_ G_ E_ X_ '_' G_ R_ O_ U_ P_ ;
 
 RANDOM
-	: 	R_ A_ N_ D_ O_ M_ ;
+	: R_ A_ N_ D_ O_ M_ ;
 
 UPPER
 	: U_ P_ P_ E_ R_ ;

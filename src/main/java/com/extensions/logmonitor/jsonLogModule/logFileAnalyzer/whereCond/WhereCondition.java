@@ -74,7 +74,8 @@ public class WhereCondition implements Clearable {
 	public List<OptExecute> findOptExecutes(String path) {
 		for (Map.Entry<NeedParsePathMatcher, List<OptExecute>> entry : this.optExecuteQuickVisitCache2.entrySet()) {
 			NeedParsePathMatcher key = entry.getKey();
-			if (key.fullMatch(OptExecute.COLUMN_NAME_PREFIX + path)) {
+			if (key.fullMatch(OptExecute.COLUMN_NAME_PREFIX + path)
+					|| key.fullMatch(OptExecute.FUN_CALL_PREFIX + path)) {
 				return entry.getValue();
 			}
 		}

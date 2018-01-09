@@ -690,7 +690,7 @@ public class JsonLogSqlAnalyzer extends jsonLogSqlBaseListener {
 		} else {
 			TwoTuple<ValueConvert, List<String>> doHandleFunctionCall = this.doHandleFunctionCall(fc);
 			optExecute.setValueConvert(doHandleFunctionCall.first);
-			return doHandleFunctionCall.second.get(0);
+			return OptExecute.FUN_CALL_PREFIX + doHandleFunctionCall.second.get(0);
 		}
 		return null;
 	}

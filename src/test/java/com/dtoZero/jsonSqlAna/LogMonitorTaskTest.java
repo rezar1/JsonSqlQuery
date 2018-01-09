@@ -3,6 +3,10 @@ package com.dtoZero.jsonSqlAna;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.when;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -11,6 +15,11 @@ import org.mockito.runners.MockitoJUnitRunner;
 import com.extensions.logmonitor.config.CommonConfig;
 import com.extensions.logmonitor.config.LogJsonAnalyzer;
 import com.extensions.logmonitor.config.SearchInfo;
+import com.extensions.logmonitor.jsonContentParseies.jsonContentAnalyzer.NeedParsePathMatcher;
+import com.extensions.logmonitor.jsonLogModule.jsonLogSelectParser.JsonLogQuerySqlParser;
+import com.extensions.logmonitor.jsonLogModule.logFileAnalyzer.whereCond.OptExecute;
+import com.extensions.logmonitor.jsonLogModule.logFileAnalyzer.whereCond.WhereCondition;
+import com.extensions.logmonitor.jsonLogModule.queryExecute.QueryExecutor;
 import com.extensions.logmonitor.logFileAnalyzer.LogMonitorTaskForJsonAnalyzer;
 import com.extensions.logmonitor.processors.FilePointer;
 import com.extensions.logmonitor.processors.FilePointerProcessor;
@@ -32,6 +41,24 @@ public class LogMonitorTaskTest {
 		}
 		String logEventTypeStr = Str.substring(indexOf + 15, Str.indexOf("\"", indexOf + 17));
 		System.out.println(logEventTypeStr);
+	}
+
+	@Test
+	public void testWhereFunCall() throws Exception {
+		String selectQuery = "select * from user_info where hour('yyyy-MM-dd HH:mm:ss',time) between 10 and 23";
+		QueryExecutor queryExecutor = JsonLogQuerySqlParser.createQueryExecutor(selectQuery);
+		WhereCondition whereCondition = queryExecutor.getWhereCondition();
+		Map<NeedParsePathMatcher, List<OptExecute>> optExecuteQuickVisitCache2 = whereCondition
+				.getOptExecuteQuickVisitCache2();
+		System.out.println("optExecuteQuickVisitCache2:" + optExecuteQuickVisitCache2);
+		List<OptExecute> findOptExecutes = whereCondition.findOptExecutes("time");
+		System.out.println("findOptExecutes are:" + findOptExecutes);
+		Map<OptExecute, Boolean> optResult = new HashMap<>();
+		for (OptExecute opt : findOptExecutes) {
+			boolean optSuccess = opt.OptSuccess("2017-12-12 14:23:10");
+			optResult.put(opt, optSuccess);
+		}
+		System.out.println("checkWhereIsSuccess:" + whereCondition.checkWhereIsSuccess(optResult));
 	}
 
 	@Test
