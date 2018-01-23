@@ -1,5 +1,6 @@
 package com.extensions.logmonitor.jsonLogModule.logFileAnalyzer.whereCond;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -70,16 +71,16 @@ public class WhereCondition implements Clearable {
 		return unmodifiableMap;
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<OptExecute> findOptExecutes(String path) {
+		List<OptExecute> optExecutes = new ArrayList<OptExecute>();
 		for (Map.Entry<NeedParsePathMatcher, List<OptExecute>> entry : this.optExecuteQuickVisitCache2.entrySet()) {
 			NeedParsePathMatcher key = entry.getKey();
 			if (key.fullMatch(OptExecute.COLUMN_NAME_PREFIX + path)
 					|| key.fullMatch(OptExecute.FUN_CALL_PREFIX + path)) {
-				return entry.getValue();
+				optExecutes.addAll(entry.getValue());
 			}
 		}
-		return Collections.EMPTY_LIST;
+		return optExecutes;
 	}
 
 	@Override

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import com.extensions.logmonitor.jsonLogModule.logFileAnalyzer.functions.valueConvert.FormatDateConvert;
 import com.extensions.logmonitor.jsonLogModule.logFileAnalyzer.functions.valueConvert.RandomConvert;
 import com.extensions.logmonitor.jsonLogModule.logFileAnalyzer.functions.valueConvert.StringConvert;
 import com.extensions.logmonitor.jsonLogModule.logFileAnalyzer.functions.valueConvert.StringRegexConvert;
@@ -31,23 +32,33 @@ public class FunctionCreator {
 		List<String> paths = new ArrayList<>();
 		ValueConvert valueConvert = null;
 		if (FUN_TIME_TYPE == type) {
-			valueConvert = new TimeConvert();
-			if (params.size() == 2) {
-				((TimeConvert) valueConvert).setTimeFormat(params.get(0).toString());
-				paths.add(params.get(1).toString());
-			} else if (params.size() == 1) {
-				paths.add(params.get(0).toString());
-			}
-			if (functionName.equals("DAY")) {
-				((TimeConvert) valueConvert).setTakeField(Calendar.DAY_OF_YEAR);
-			} else if (functionName.equals("HOUR")) {
-				((TimeConvert) valueConvert).setTakeField(Calendar.HOUR_OF_DAY);
-			} else if (functionName.equals("MINUTE")) {
-				((TimeConvert) valueConvert).setTakeField(Calendar.MINUTE);
-			} else if (functionName.equals("YEAR")) {
-				((TimeConvert) valueConvert).setTakeField(Calendar.YEAR);
-			} else if (functionName.equals("SECOND")) {
-				((TimeConvert) valueConvert).setTakeField(Calendar.SECOND);
+			if (functionName.equals("FORMAT_DATE")) {
+				valueConvert = new FormatDateConvert();
+				if (params.size() == 2) {
+					((FormatDateConvert) valueConvert).setTimeFormat(params.get(0).toString());
+					paths.add(params.get(1).toString());
+				} else if (params.size() == 1) {
+					paths.add(params.get(0).toString());
+				}
+			} else {
+				valueConvert = new TimeConvert();
+				if (params.size() == 2) {
+					((TimeConvert) valueConvert).setTimeFormat(params.get(0).toString());
+					paths.add(params.get(1).toString());
+				} else if (params.size() == 1) {
+					paths.add(params.get(0).toString());
+				}
+				if (functionName.equals("DAY")) {
+					((TimeConvert) valueConvert).setTakeField(Calendar.DAY_OF_YEAR);
+				} else if (functionName.equals("HOUR")) {
+					((TimeConvert) valueConvert).setTakeField(Calendar.HOUR_OF_DAY);
+				} else if (functionName.equals("MINUTE")) {
+					((TimeConvert) valueConvert).setTakeField(Calendar.MINUTE);
+				} else if (functionName.equals("YEAR")) {
+					((TimeConvert) valueConvert).setTakeField(Calendar.YEAR);
+				} else if (functionName.equals("SECOND")) {
+					((TimeConvert) valueConvert).setTakeField(Calendar.SECOND);
+				}
 			}
 		} else if (FUN_CHAR_TYPE == type) {
 			if (functionName.equals("REGEX_GROUP")) {

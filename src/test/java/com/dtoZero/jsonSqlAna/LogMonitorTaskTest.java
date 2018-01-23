@@ -45,7 +45,7 @@ public class LogMonitorTaskTest {
 
 	@Test
 	public void testWhereFunCall() throws Exception {
-		String selectQuery = "select * from user_info where hour('yyyy-MM-dd HH:mm:ss',time) between 10 and 23";
+		String selectQuery = "select * from user_info where format_date('MM-dd HH:mm:ss',time) between '01-23 10:10:10' and '01-23 18:10:10'";
 		QueryExecutor queryExecutor = JsonLogQuerySqlParser.createQueryExecutor(selectQuery);
 		WhereCondition whereCondition = queryExecutor.getWhereCondition();
 		Map<NeedParsePathMatcher, List<OptExecute>> optExecuteQuickVisitCache2 = whereCondition
@@ -55,7 +55,7 @@ public class LogMonitorTaskTest {
 		System.out.println("findOptExecutes are:" + findOptExecutes);
 		Map<OptExecute, Boolean> optResult = new HashMap<>();
 		for (OptExecute opt : findOptExecutes) {
-			boolean optSuccess = opt.OptSuccess("2017-12-12 14:23:10");
+			boolean optSuccess = opt.OptSuccess(System.currentTimeMillis());
 			optResult.put(opt, optSuccess);
 		}
 		System.out.println("checkWhereIsSuccess:" + whereCondition.checkWhereIsSuccess(optResult));

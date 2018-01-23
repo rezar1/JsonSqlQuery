@@ -300,6 +300,9 @@ SECOND
 YEAR
 	: Y_ E_ A_ R_ ;
 
+FORMAT_DATE
+	: 	F_ O_ R_ M_ A_ T_ '_' D_ A_ T_ E_ ;
+
 AVG
 	: A_ V_ G_ ;
 
@@ -525,7 +528,8 @@ time_functions
 	| MINUTE
 	| MONTH
 	| SECOND
-	| YEAR ;
+	| YEAR
+	| FORMAT_DATE ;
 
 group_functions
 	: AVG

@@ -23,14 +23,14 @@ public class jsonLogSqlParser extends Parser {
 		DESC=24, ORDER=25, GROUP=26, BY=27, HAVING=28, WHERE=29, FROM=30, AS=31, 
 		SELECT=32, DISTINCT=33, IS=34, NULL=35, CAST=36, ADD=37, BETWEEN=38, RLIKE=39, 
 		REGEXP=40, LIMIT=41, IN=42, DAY=43, HOUR=44, MINUTE=45, MONTH=46, SECOND=47, 
-		YEAR=48, AVG=49, COUNT=50, MAX=51, MIN=52, SUM=53, DIVIDE=54, MOD=55, 
-		OR=56, AND=57, XOR=58, EQ=59, NOT_EQ=60, LET=61, GET=62, SET_VAR=63, SHIFT_LEFT=64, 
-		SHIFT_RIGHT=65, SEMI=66, COLON=67, DOT=68, COMMA=69, ASTERISK=70, RPAREN=71, 
-		LPAREN=72, RBRACK=73, LBRACK=74, PLUS=75, MINUS=76, NEGATION=77, VERTBAR=78, 
-		BITAND=79, POWER_OP=80, GTH=81, LTH=82, Double_Quote=83, INTEGER_NUM=84, 
-		VARCHAR_NUM=85, BINARY_NUM=86, HEX_DIGIT=87, BIT_NUM=88, REAL_NUMBER=89, 
-		TEXT_STRING=90, ID=91, LINE_COMMENT=92, BLOCKCOMMENT=93, WHITE_SPACE=94, 
-		SL_COMMENT=95, Regex_Escaped_Unicode=96;
+		YEAR=48, FORMAT_DATE=49, AVG=50, COUNT=51, MAX=52, MIN=53, SUM=54, DIVIDE=55, 
+		MOD=56, OR=57, AND=58, XOR=59, EQ=60, NOT_EQ=61, LET=62, GET=63, SET_VAR=64, 
+		SHIFT_LEFT=65, SHIFT_RIGHT=66, SEMI=67, COLON=68, DOT=69, COMMA=70, ASTERISK=71, 
+		RPAREN=72, LPAREN=73, RBRACK=74, LBRACK=75, PLUS=76, MINUS=77, NEGATION=78, 
+		VERTBAR=79, BITAND=80, POWER_OP=81, GTH=82, LTH=83, Double_Quote=84, INTEGER_NUM=85, 
+		VARCHAR_NUM=86, BINARY_NUM=87, HEX_DIGIT=88, BIT_NUM=89, REAL_NUMBER=90, 
+		TEXT_STRING=91, ID=92, LINE_COMMENT=93, BLOCKCOMMENT=94, WHITE_SPACE=95, 
+		SL_COMMENT=96, Regex_Escaped_Unicode=97;
 	public static final int
 		RULE_keyword = 0, RULE_delimited_statement = 1, RULE_relational_op = 2, 
 		RULE_interval_unit = 3, RULE_string_literal = 4, RULE_number_literal = 5, 
@@ -66,9 +66,9 @@ public class jsonLogSqlParser extends Parser {
 		null, null, null, null, null, null, null, null, null, null, null, null, 
 		null, null, null, null, null, null, null, null, null, null, null, null, 
 		null, null, null, null, null, null, null, null, null, null, null, null, 
-		null, "'<='", "'>='", "':='", "'<<'", "'>>'", "';'", "':'", "'.'", "','", 
-		"'*'", "')'", "'('", "']'", "'['", "'+'", "'-'", "'~'", "'|'", "'&'", 
-		"'^'", "'>'", "'<'"
+		null, null, "'<='", "'>='", "':='", "'<<'", "'>>'", "';'", "':'", "'.'", 
+		"','", "'*'", "')'", "'('", "']'", "'['", "'+'", "'-'", "'~'", "'|'", 
+		"'&'", "'^'", "'>'", "'<'"
 	};
 	private static final String[] _SYMBOLIC_NAMES = {
 		null, null, "LCASE", "LOWER", "LTRIM", "RTRIM", "CONCAT", "SUBSTR", "TO_CHAR", 
@@ -76,14 +76,14 @@ public class jsonLogSqlParser extends Parser {
 		"TRUE", "FALSE", "ALL", "NOT", "LIKE", "IF", "EXISTS", "ASC", "DESC", 
 		"ORDER", "GROUP", "BY", "HAVING", "WHERE", "FROM", "AS", "SELECT", "DISTINCT", 
 		"IS", "NULL", "CAST", "ADD", "BETWEEN", "RLIKE", "REGEXP", "LIMIT", "IN", 
-		"DAY", "HOUR", "MINUTE", "MONTH", "SECOND", "YEAR", "AVG", "COUNT", "MAX", 
-		"MIN", "SUM", "DIVIDE", "MOD", "OR", "AND", "XOR", "EQ", "NOT_EQ", "LET", 
-		"GET", "SET_VAR", "SHIFT_LEFT", "SHIFT_RIGHT", "SEMI", "COLON", "DOT", 
-		"COMMA", "ASTERISK", "RPAREN", "LPAREN", "RBRACK", "LBRACK", "PLUS", "MINUS", 
-		"NEGATION", "VERTBAR", "BITAND", "POWER_OP", "GTH", "LTH", "Double_Quote", 
-		"INTEGER_NUM", "VARCHAR_NUM", "BINARY_NUM", "HEX_DIGIT", "BIT_NUM", "REAL_NUMBER", 
-		"TEXT_STRING", "ID", "LINE_COMMENT", "BLOCKCOMMENT", "WHITE_SPACE", "SL_COMMENT", 
-		"Regex_Escaped_Unicode"
+		"DAY", "HOUR", "MINUTE", "MONTH", "SECOND", "YEAR", "FORMAT_DATE", "AVG", 
+		"COUNT", "MAX", "MIN", "SUM", "DIVIDE", "MOD", "OR", "AND", "XOR", "EQ", 
+		"NOT_EQ", "LET", "GET", "SET_VAR", "SHIFT_LEFT", "SHIFT_RIGHT", "SEMI", 
+		"COLON", "DOT", "COMMA", "ASTERISK", "RPAREN", "LPAREN", "RBRACK", "LBRACK", 
+		"PLUS", "MINUS", "NEGATION", "VERTBAR", "BITAND", "POWER_OP", "GTH", "LTH", 
+		"Double_Quote", "INTEGER_NUM", "VARCHAR_NUM", "BINARY_NUM", "HEX_DIGIT", 
+		"BIT_NUM", "REAL_NUMBER", "TEXT_STRING", "ID", "LINE_COMMENT", "BLOCKCOMMENT", 
+		"WHITE_SPACE", "SL_COMMENT", "Regex_Escaped_Unicode"
 	};
 	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
 
@@ -210,7 +210,7 @@ public class jsonLogSqlParser extends Parser {
 			{
 			setState(92);
 			_la = _input.LA(1);
-			if ( !(((((_la - 2)) & ~0x3f) == 0 && ((1L << (_la - 2)) & ((1L << (LCASE - 2)) | (1L << (LOWER - 2)) | (1L << (LTRIM - 2)) | (1L << (RTRIM - 2)) | (1L << (CONCAT - 2)) | (1L << (SUBSTR - 2)) | (1L << (TO_CHAR - 2)) | (1L << (TRIM - 2)) | (1L << (UCASE - 2)) | (1L << (REGEX_GROUP - 2)) | (1L << (UPPER - 2)) | (1L << (LENGTH - 2)) | (1L << (REVERSE - 2)) | (1L << (TRUE - 2)) | (1L << (FALSE - 2)) | (1L << (ALL - 2)) | (1L << (NOT - 2)) | (1L << (LIKE - 2)) | (1L << (IF - 2)) | (1L << (EXISTS - 2)) | (1L << (ASC - 2)) | (1L << (DESC - 2)) | (1L << (ORDER - 2)) | (1L << (GROUP - 2)) | (1L << (BY - 2)) | (1L << (HAVING - 2)) | (1L << (WHERE - 2)) | (1L << (FROM - 2)) | (1L << (AS - 2)) | (1L << (SELECT - 2)) | (1L << (DISTINCT - 2)) | (1L << (IS - 2)) | (1L << (NULL - 2)) | (1L << (ADD - 2)) | (1L << (BETWEEN - 2)) | (1L << (AVG - 2)) | (1L << (COUNT - 2)) | (1L << (MAX - 2)) | (1L << (MIN - 2)) | (1L << (SUM - 2)) | (1L << (DIVIDE - 2)) | (1L << (MOD - 2)) | (1L << (OR - 2)) | (1L << (AND - 2)) | (1L << (XOR - 2)) | (1L << (EQ - 2)) | (1L << (NOT_EQ - 2)) | (1L << (LET - 2)) | (1L << (GET - 2)) | (1L << (SET_VAR - 2)) | (1L << (SHIFT_LEFT - 2)) | (1L << (SHIFT_RIGHT - 2)))) != 0)) ) {
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << LCASE) | (1L << LOWER) | (1L << LTRIM) | (1L << RTRIM) | (1L << CONCAT) | (1L << SUBSTR) | (1L << TO_CHAR) | (1L << TRIM) | (1L << UCASE) | (1L << REGEX_GROUP) | (1L << UPPER) | (1L << LENGTH) | (1L << REVERSE) | (1L << TRUE) | (1L << FALSE) | (1L << ALL) | (1L << NOT) | (1L << LIKE) | (1L << IF) | (1L << EXISTS) | (1L << ASC) | (1L << DESC) | (1L << ORDER) | (1L << GROUP) | (1L << BY) | (1L << HAVING) | (1L << WHERE) | (1L << FROM) | (1L << AS) | (1L << SELECT) | (1L << DISTINCT) | (1L << IS) | (1L << NULL) | (1L << ADD) | (1L << BETWEEN) | (1L << AVG) | (1L << COUNT) | (1L << MAX) | (1L << MIN) | (1L << SUM) | (1L << DIVIDE) | (1L << MOD) | (1L << OR) | (1L << AND) | (1L << XOR) | (1L << EQ) | (1L << NOT_EQ) | (1L << LET) | (1L << GET))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (SET_VAR - 64)) | (1L << (SHIFT_LEFT - 64)) | (1L << (SHIFT_RIGHT - 64)))) != 0)) ) {
 			_errHandler.recoverInline(this);
 			} else {
 				consume();
@@ -295,7 +295,7 @@ public class jsonLogSqlParser extends Parser {
 			{
 			setState(96);
 			_la = _input.LA(1);
-			if ( !(((((_la - 59)) & ~0x3f) == 0 && ((1L << (_la - 59)) & ((1L << (EQ - 59)) | (1L << (NOT_EQ - 59)) | (1L << (LET - 59)) | (1L << (GET - 59)) | (1L << (GTH - 59)) | (1L << (LTH - 59)))) != 0)) ) {
+			if ( !(((((_la - 60)) & ~0x3f) == 0 && ((1L << (_la - 60)) & ((1L << (EQ - 60)) | (1L << (NOT_EQ - 60)) | (1L << (LET - 60)) | (1L << (GET - 60)) | (1L << (GTH - 60)) | (1L << (LTH - 60)))) != 0)) ) {
 			_errHandler.recoverInline(this);
 			} else {
 				consume();
@@ -707,6 +707,7 @@ public class jsonLogSqlParser extends Parser {
 			case MONTH:
 			case SECOND:
 			case YEAR:
+			case FORMAT_DATE:
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(121);
@@ -761,6 +762,7 @@ public class jsonLogSqlParser extends Parser {
 		public TerminalNode MONTH() { return getToken(jsonLogSqlParser.MONTH, 0); }
 		public TerminalNode SECOND() { return getToken(jsonLogSqlParser.SECOND, 0); }
 		public TerminalNode YEAR() { return getToken(jsonLogSqlParser.YEAR, 0); }
+		public TerminalNode FORMAT_DATE() { return getToken(jsonLogSqlParser.FORMAT_DATE, 0); }
 		public Time_functionsContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
@@ -784,7 +786,7 @@ public class jsonLogSqlParser extends Parser {
 			{
 			setState(126);
 			_la = _input.LA(1);
-			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << DAY) | (1L << HOUR) | (1L << MINUTE) | (1L << MONTH) | (1L << SECOND) | (1L << YEAR))) != 0)) ) {
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << DAY) | (1L << HOUR) | (1L << MINUTE) | (1L << MONTH) | (1L << SECOND) | (1L << YEAR) | (1L << FORMAT_DATE))) != 0)) ) {
 			_errHandler.recoverInline(this);
 			} else {
 				consume();
@@ -2115,6 +2117,7 @@ public class jsonLogSqlParser extends Parser {
 			case MONTH:
 			case SECOND:
 			case YEAR:
+			case FORMAT_DATE:
 				enterOuterAlt(_localctx, 1);
 				{
 				{
@@ -2128,7 +2131,7 @@ public class jsonLogSqlParser extends Parser {
 					match(LPAREN);
 					setState(268);
 					_la = _input.LA(1);
-					if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << LCASE) | (1L << LOWER) | (1L << LTRIM) | (1L << RTRIM) | (1L << CONCAT) | (1L << SUBSTR) | (1L << TO_CHAR) | (1L << TRIM) | (1L << UCASE) | (1L << REGEX_GROUP) | (1L << RANDOM) | (1L << UPPER) | (1L << LENGTH) | (1L << REVERSE) | (1L << TRUE) | (1L << FALSE) | (1L << ALL) | (1L << NOT) | (1L << LIKE) | (1L << IF) | (1L << EXISTS) | (1L << ASC) | (1L << DESC) | (1L << ORDER) | (1L << GROUP) | (1L << BY) | (1L << HAVING) | (1L << WHERE) | (1L << FROM) | (1L << AS) | (1L << SELECT) | (1L << DISTINCT) | (1L << IS) | (1L << NULL) | (1L << ADD) | (1L << BETWEEN) | (1L << DAY) | (1L << HOUR) | (1L << MINUTE) | (1L << MONTH) | (1L << SECOND) | (1L << YEAR) | (1L << AVG) | (1L << COUNT) | (1L << MAX) | (1L << MIN) | (1L << SUM) | (1L << DIVIDE) | (1L << MOD) | (1L << OR) | (1L << AND) | (1L << XOR) | (1L << EQ) | (1L << NOT_EQ) | (1L << LET) | (1L << GET) | (1L << SET_VAR))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (SHIFT_LEFT - 64)) | (1L << (SHIFT_RIGHT - 64)) | (1L << (LPAREN - 64)) | (1L << (PLUS - 64)) | (1L << (MINUS - 64)) | (1L << (INTEGER_NUM - 64)) | (1L << (HEX_DIGIT - 64)) | (1L << (BIT_NUM - 64)) | (1L << (REAL_NUMBER - 64)) | (1L << (TEXT_STRING - 64)) | (1L << (ID - 64)))) != 0)) {
+					if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << LCASE) | (1L << LOWER) | (1L << LTRIM) | (1L << RTRIM) | (1L << CONCAT) | (1L << SUBSTR) | (1L << TO_CHAR) | (1L << TRIM) | (1L << UCASE) | (1L << REGEX_GROUP) | (1L << RANDOM) | (1L << UPPER) | (1L << LENGTH) | (1L << REVERSE) | (1L << TRUE) | (1L << FALSE) | (1L << ALL) | (1L << NOT) | (1L << LIKE) | (1L << IF) | (1L << EXISTS) | (1L << ASC) | (1L << DESC) | (1L << ORDER) | (1L << GROUP) | (1L << BY) | (1L << HAVING) | (1L << WHERE) | (1L << FROM) | (1L << AS) | (1L << SELECT) | (1L << DISTINCT) | (1L << IS) | (1L << NULL) | (1L << ADD) | (1L << BETWEEN) | (1L << DAY) | (1L << HOUR) | (1L << MINUTE) | (1L << MONTH) | (1L << SECOND) | (1L << YEAR) | (1L << FORMAT_DATE) | (1L << AVG) | (1L << COUNT) | (1L << MAX) | (1L << MIN) | (1L << SUM) | (1L << DIVIDE) | (1L << MOD) | (1L << OR) | (1L << AND) | (1L << XOR) | (1L << EQ) | (1L << NOT_EQ) | (1L << LET) | (1L << GET))) != 0) || ((((_la - 64)) & ~0x3f) == 0 && ((1L << (_la - 64)) & ((1L << (SET_VAR - 64)) | (1L << (SHIFT_LEFT - 64)) | (1L << (SHIFT_RIGHT - 64)) | (1L << (LPAREN - 64)) | (1L << (PLUS - 64)) | (1L << (MINUS - 64)) | (1L << (INTEGER_NUM - 64)) | (1L << (HEX_DIGIT - 64)) | (1L << (BIT_NUM - 64)) | (1L << (REAL_NUMBER - 64)) | (1L << (TEXT_STRING - 64)) | (1L << (ID - 64)))) != 0)) {
 						{
 						setState(260);
 						simple_expr();
@@ -2229,6 +2232,7 @@ public class jsonLogSqlParser extends Parser {
 				case MONTH:
 				case SECOND:
 				case YEAR:
+				case FORMAT_DATE:
 				case AVG:
 				case COUNT:
 				case MAX:
@@ -3652,7 +3656,7 @@ public class jsonLogSqlParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3b\u01c1\4\2\t\2\4"+
+		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\3c\u01c1\4\2\t\2\4"+
 		"\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4\13\t"+
 		"\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22\t\22"+
 		"\4\23\t\23\4\24\t\24\4\25\t\25\4\26\t\26\4\27\t\27\4\30\t\30\4\31\t\31"+
@@ -3686,56 +3690,56 @@ public class jsonLogSqlParser extends Parser {
 		"\n\'\3(\3(\3(\3(\5(\u0198\n(\3(\3(\3)\3)\3*\3*\3+\3+\5+\u01a2\n+\3+\3"+
 		"+\3+\7+\u01a7\n+\f+\16+\u01aa\13+\3,\3,\3,\3,\3,\3,\3,\5,\u01b3\n,\3,"+
 		"\3,\5,\u01b7\n,\5,\u01b9\n,\3-\3-\3.\3.\3/\3/\3/\2\2\60\2\4\6\b\n\f\16"+
-		"\20\22\24\26\30\32\34\36 \"$&(*,.\60\62\64\668:<>@BDFHJLNPRTVXZ\\\2\16"+
-		"\6\2\4\r\17%\'(\63C\4\2=@ST\3\2-\62\3\2MN\4\2VV[[\3\2\22\23\3\2\63\67"+
-		"\4\2\4\r\17\21\5\2\24\24##HH\5\2\3\3HHVV\4\2\24\24##\3\2\31\32\u01da\2"+
-		"^\3\2\2\2\4`\3\2\2\2\6b\3\2\2\2\bd\3\2\2\2\nf\3\2\2\2\fi\3\2\2\2\16m\3"+
-		"\2\2\2\20o\3\2\2\2\22q\3\2\2\2\24y\3\2\2\2\26~\3\2\2\2\30\u0080\3\2\2"+
-		"\2\32\u0082\3\2\2\2\34\u0084\3\2\2\2\36\u0086\3\2\2\2 \u0088\3\2\2\2\""+
-		"\u008a\3\2\2\2$\u008d\3\2\2\2&\u0094\3\2\2\2(\u0098\3\2\2\2*\u009a\3\2"+
-		"\2\2,\u00a2\3\2\2\2.\u00aa\3\2\2\2\60\u00fb\3\2\2\2\62\u0102\3\2\2\2\64"+
-		"\u011e\3\2\2\2\66\u0125\3\2\2\28\u013a\3\2\2\2:\u013c\3\2\2\2<\u0147\3"+
-		"\2\2\2>\u014f\3\2\2\2@\u0159\3\2\2\2B\u016d\3\2\2\2D\u0170\3\2\2\2F\u0180"+
-		"\3\2\2\2H\u0182\3\2\2\2J\u0185\3\2\2\2L\u018f\3\2\2\2N\u0193\3\2\2\2P"+
-		"\u019b\3\2\2\2R\u019d\3\2\2\2T\u019f\3\2\2\2V\u01b8\3\2\2\2X\u01ba\3\2"+
-		"\2\2Z\u01bc\3\2\2\2\\\u01be\3\2\2\2^_\t\2\2\2_\3\3\2\2\2`a\7b\2\2a\5\3"+
-		"\2\2\2bc\t\3\2\2c\7\3\2\2\2de\t\4\2\2e\t\3\2\2\2fg\7\\\2\2g\13\3\2\2\2"+
-		"hj\t\5\2\2ih\3\2\2\2ij\3\2\2\2jk\3\2\2\2kl\t\6\2\2l\r\3\2\2\2mn\7Y\2\2"+
-		"n\17\3\2\2\2op\t\7\2\2p\21\3\2\2\2qr\7Z\2\2r\23\3\2\2\2sz\5\n\6\2tz\5"+
-		"\f\7\2uz\5\16\b\2vz\5\20\t\2wz\5\22\n\2xz\7%\2\2ys\3\2\2\2yt\3\2\2\2y"+
-		"u\3\2\2\2yv\3\2\2\2yw\3\2\2\2yx\3\2\2\2z\25\3\2\2\2{\177\5\30\r\2|\177"+
-		"\5\34\17\2}\177\5\36\20\2~{\3\2\2\2~|\3\2\2\2~}\3\2\2\2\177\27\3\2\2\2"+
-		"\u0080\u0081\t\4\2\2\u0081\31\3\2\2\2\u0082\u0083\t\b\2\2\u0083\33\3\2"+
-		"\2\2\u0084\u0085\t\t\2\2\u0085\35\3\2\2\2\u0086\u0087\7\16\2\2\u0087\37"+
-		"\3\2\2\2\u0088\u0089\5&\24\2\u0089!\3\2\2\2\u008a\u008b\5&\24\2\u008b"+
+		"\20\22\24\26\30\32\34\36 \"$&(*,.\60\62\64\668:<>@BDFHJLNPRTVXZ\\\2\17"+
+		"\6\2\4\r\17%\'(\64D\4\2>ATU\3\2-\62\3\2NO\4\2WW\\\\\3\2\22\23\3\2-\63"+
+		"\3\2\648\4\2\4\r\17\21\5\2\24\24##II\5\2\3\3IIWW\4\2\24\24##\3\2\31\32"+
+		"\u01da\2^\3\2\2\2\4`\3\2\2\2\6b\3\2\2\2\bd\3\2\2\2\nf\3\2\2\2\fi\3\2\2"+
+		"\2\16m\3\2\2\2\20o\3\2\2\2\22q\3\2\2\2\24y\3\2\2\2\26~\3\2\2\2\30\u0080"+
+		"\3\2\2\2\32\u0082\3\2\2\2\34\u0084\3\2\2\2\36\u0086\3\2\2\2 \u0088\3\2"+
+		"\2\2\"\u008a\3\2\2\2$\u008d\3\2\2\2&\u0094\3\2\2\2(\u0098\3\2\2\2*\u009a"+
+		"\3\2\2\2,\u00a2\3\2\2\2.\u00aa\3\2\2\2\60\u00fb\3\2\2\2\62\u0102\3\2\2"+
+		"\2\64\u011e\3\2\2\2\66\u0125\3\2\2\28\u013a\3\2\2\2:\u013c\3\2\2\2<\u0147"+
+		"\3\2\2\2>\u014f\3\2\2\2@\u0159\3\2\2\2B\u016d\3\2\2\2D\u0170\3\2\2\2F"+
+		"\u0180\3\2\2\2H\u0182\3\2\2\2J\u0185\3\2\2\2L\u018f\3\2\2\2N\u0193\3\2"+
+		"\2\2P\u019b\3\2\2\2R\u019d\3\2\2\2T\u019f\3\2\2\2V\u01b8\3\2\2\2X\u01ba"+
+		"\3\2\2\2Z\u01bc\3\2\2\2\\\u01be\3\2\2\2^_\t\2\2\2_\3\3\2\2\2`a\7c\2\2"+
+		"a\5\3\2\2\2bc\t\3\2\2c\7\3\2\2\2de\t\4\2\2e\t\3\2\2\2fg\7]\2\2g\13\3\2"+
+		"\2\2hj\t\5\2\2ih\3\2\2\2ij\3\2\2\2jk\3\2\2\2kl\t\6\2\2l\r\3\2\2\2mn\7"+
+		"Z\2\2n\17\3\2\2\2op\t\7\2\2p\21\3\2\2\2qr\7[\2\2r\23\3\2\2\2sz\5\n\6\2"+
+		"tz\5\f\7\2uz\5\16\b\2vz\5\20\t\2wz\5\22\n\2xz\7%\2\2ys\3\2\2\2yt\3\2\2"+
+		"\2yu\3\2\2\2yv\3\2\2\2yw\3\2\2\2yx\3\2\2\2z\25\3\2\2\2{\177\5\30\r\2|"+
+		"\177\5\34\17\2}\177\5\36\20\2~{\3\2\2\2~|\3\2\2\2~}\3\2\2\2\177\27\3\2"+
+		"\2\2\u0080\u0081\t\b\2\2\u0081\31\3\2\2\2\u0082\u0083\t\t\2\2\u0083\33"+
+		"\3\2\2\2\u0084\u0085\t\n\2\2\u0085\35\3\2\2\2\u0086\u0087\7\16\2\2\u0087"+
+		"\37\3\2\2\2\u0088\u0089\5&\24\2\u0089!\3\2\2\2\u008a\u008b\5&\24\2\u008b"+
 		"#\3\2\2\2\u008c\u008e\7!\2\2\u008d\u008c\3\2\2\2\u008d\u008e\3\2\2\2\u008e"+
-		"\u008f\3\2\2\2\u008f\u0090\5(\25\2\u0090%\3\2\2\2\u0091\u0095\7]\2\2\u0092"+
+		"\u008f\3\2\2\2\u008f\u0090\5(\25\2\u0090%\3\2\2\2\u0091\u0095\7^\2\2\u0092"+
 		"\u0095\5\2\2\2\u0093\u0095\5\n\6\2\u0094\u0091\3\2\2\2\u0094\u0092\3\2"+
-		"\2\2\u0094\u0093\3\2\2\2\u0095\'\3\2\2\2\u0096\u0099\7]\2\2\u0097\u0099"+
+		"\2\2\u0094\u0093\3\2\2\2\u0095\'\3\2\2\2\u0096\u0099\7^\2\2\u0097\u0099"+
 		"\5\n\6\2\u0098\u0096\3\2\2\2\u0098\u0097\3\2\2\2\u0099)\3\2\2\2\u009a"+
-		"\u009f\5,\27\2\u009b\u009c\7:\2\2\u009c\u009e\5,\27\2\u009d\u009b\3\2"+
+		"\u009f\5,\27\2\u009b\u009c\7;\2\2\u009c\u009e\5,\27\2\u009d\u009b\3\2"+
 		"\2\2\u009e\u00a1\3\2\2\2\u009f\u009d\3\2\2\2\u009f\u00a0\3\2\2\2\u00a0"+
-		"+\3\2\2\2\u00a1\u009f\3\2\2\2\u00a2\u00a7\5.\30\2\u00a3\u00a4\7<\2\2\u00a4"+
+		"+\3\2\2\2\u00a1\u009f\3\2\2\2\u00a2\u00a7\5.\30\2\u00a3\u00a4\7=\2\2\u00a4"+
 		"\u00a6\5.\30\2\u00a5\u00a3\3\2\2\2\u00a6\u00a9\3\2\2\2\u00a7\u00a5\3\2"+
 		"\2\2\u00a7\u00a8\3\2\2\2\u00a8-\3\2\2\2\u00a9\u00a7\3\2\2\2\u00aa\u00af"+
-		"\5\60\31\2\u00ab\u00ac\7;\2\2\u00ac\u00ae\5\60\31\2\u00ad\u00ab\3\2\2"+
+		"\5\60\31\2\u00ab\u00ac\7<\2\2\u00ac\u00ae\5\60\31\2\u00ad\u00ab\3\2\2"+
 		"\2\u00ae\u00b1\3\2\2\2\u00af\u00ad\3\2\2\2\u00af\u00b0\3\2\2\2\u00b0/"+
-		"\3\2\2\2\u00b1\u00af\3\2\2\2\u00b2\u00b3\5\62\32\2\u00b3\u00b4\7=\2\2"+
+		"\3\2\2\2\u00b1\u00af\3\2\2\2\u00b2\u00b3\5\62\32\2\u00b3\u00b4\7>\2\2"+
 		"\u00b4\u00b5\5\62\32\2\u00b5\u00fc\3\2\2\2\u00b6\u00b7\5\62\32\2\u00b7"+
-		"\u00b8\7>\2\2\u00b8\u00b9\5\62\32\2\u00b9\u00fc\3\2\2\2\u00ba\u00bb\5"+
-		"\62\32\2\u00bb\u00bc\7T\2\2\u00bc\u00bd\5\62\32\2\u00bd\u00fc\3\2\2\2"+
-		"\u00be\u00bf\5\62\32\2\u00bf\u00c0\7S\2\2\u00c0\u00c1\5\62\32\2\u00c1"+
-		"\u00fc\3\2\2\2\u00c2\u00c3\5\62\32\2\u00c3\u00c4\7?\2\2\u00c4\u00c5\5"+
-		"\62\32\2\u00c5\u00fc\3\2\2\2\u00c6\u00c7\5\62\32\2\u00c7\u00c8\7@\2\2"+
+		"\u00b8\7?\2\2\u00b8\u00b9\5\62\32\2\u00b9\u00fc\3\2\2\2\u00ba\u00bb\5"+
+		"\62\32\2\u00bb\u00bc\7U\2\2\u00bc\u00bd\5\62\32\2\u00bd\u00fc\3\2\2\2"+
+		"\u00be\u00bf\5\62\32\2\u00bf\u00c0\7T\2\2\u00c0\u00c1\5\62\32\2\u00c1"+
+		"\u00fc\3\2\2\2\u00c2\u00c3\5\62\32\2\u00c3\u00c4\7@\2\2\u00c4\u00c5\5"+
+		"\62\32\2\u00c5\u00fc\3\2\2\2\u00c6\u00c7\5\62\32\2\u00c7\u00c8\7A\2\2"+
 		"\u00c8\u00c9\5\62\32\2\u00c9\u00fc\3\2\2\2\u00ca\u00cc\5\62\32\2\u00cb"+
 		"\u00cd\7\25\2\2\u00cc\u00cb\3\2\2\2\u00cc\u00cd\3\2\2\2\u00cd\u00ce\3"+
-		"\2\2\2\u00ce\u00cf\7,\2\2\u00cf\u00d0\7J\2\2\u00d0\u00d5\5\24\13\2\u00d1"+
-		"\u00d2\7G\2\2\u00d2\u00d4\5\24\13\2\u00d3\u00d1\3\2\2\2\u00d4\u00d7\3"+
+		"\2\2\2\u00ce\u00cf\7,\2\2\u00cf\u00d0\7K\2\2\u00d0\u00d5\5\24\13\2\u00d1"+
+		"\u00d2\7H\2\2\u00d2\u00d4\5\24\13\2\u00d3\u00d1\3\2\2\2\u00d4\u00d7\3"+
 		"\2\2\2\u00d5\u00d3\3\2\2\2\u00d5\u00d6\3\2\2\2\u00d6\u00d8\3\2\2\2\u00d7"+
-		"\u00d5\3\2\2\2\u00d8\u00d9\7I\2\2\u00d9\u00fc\3\2\2\2\u00da\u00dc\5\62"+
+		"\u00d5\3\2\2\2\u00d8\u00d9\7J\2\2\u00d9\u00fc\3\2\2\2\u00da\u00dc\5\62"+
 		"\32\2\u00db\u00dd\7\25\2\2\u00dc\u00db\3\2\2\2\u00dc\u00dd\3\2\2\2\u00dd"+
 		"\u00de\3\2\2\2\u00de\u00df\7(\2\2\u00df\u00e0\5\24\13\2\u00e0\u00e1\7"+
-		";\2\2\u00e1\u00e2\5\24\13\2\u00e2\u00fc\3\2\2\2\u00e3\u00e5\5\62\32\2"+
+		"<\2\2\u00e1\u00e2\5\24\13\2\u00e2\u00fc\3\2\2\2\u00e3\u00e5\5\62\32\2"+
 		"\u00e4\u00e6\7\25\2\2\u00e5\u00e4\3\2\2\2\u00e5\u00e6\3\2\2\2\u00e6\u00e7"+
 		"\3\2\2\2\u00e7\u00e8\7\26\2\2\u00e8\u00e9\5\62\32\2\u00e9\u00fc\3\2\2"+
 		"\2\u00ea\u00ec\5\62\32\2\u00eb\u00ed\7\25\2\2\u00ec\u00eb\3\2\2\2\u00ec"+
@@ -3751,31 +3755,31 @@ public class jsonLogSqlParser extends Parser {
 		"\34\2\u00ff\u0103\58\35\2\u0100\u0103\5\64\33\2\u0101\u0103\5:\36\2\u0102"+
 		"\u00fd\3\2\2\2\u0102\u00fe\3\2\2\2\u0102\u00ff\3\2\2\2\u0102\u0100\3\2"+
 		"\2\2\u0102\u0101\3\2\2\2\u0103\63\3\2\2\2\u0104\u0111\5\26\f\2\u0105\u010e"+
-		"\7J\2\2\u0106\u010b\5\62\32\2\u0107\u0108\7G\2\2\u0108\u010a\5\62\32\2"+
+		"\7K\2\2\u0106\u010b\5\62\32\2\u0107\u0108\7H\2\2\u0108\u010a\5\62\32\2"+
 		"\u0109\u0107\3\2\2\2\u010a\u010d\3\2\2\2\u010b\u0109\3\2\2\2\u010b\u010c"+
 		"\3\2\2\2\u010c\u010f\3\2\2\2\u010d\u010b\3\2\2\2\u010e\u0106\3\2\2\2\u010e"+
-		"\u010f\3\2\2\2\u010f\u0110\3\2\2\2\u0110\u0112\7I\2\2\u0111\u0105\3\2"+
+		"\u010f\3\2\2\2\u010f\u0110\3\2\2\2\u0110\u0112\7J\2\2\u0111\u0105\3\2"+
 		"\2\2\u0111\u0112\3\2\2\2\u0112\u011f\3\2\2\2\u0113\u0114\5\32\16\2\u0114"+
-		"\u0116\7J\2\2\u0115\u0117\t\n\2\2\u0116\u0115\3\2\2\2\u0116\u0117\3\2"+
-		"\2\2\u0117\u011a\3\2\2\2\u0118\u011b\5\62\32\2\u0119\u011b\7H\2\2\u011a"+
-		"\u0118\3\2\2\2\u011a\u0119\3\2\2\2\u011b\u011c\3\2\2\2\u011c\u011d\7I"+
+		"\u0116\7K\2\2\u0115\u0117\t\13\2\2\u0116\u0115\3\2\2\2\u0116\u0117\3\2"+
+		"\2\2\u0117\u011a\3\2\2\2\u0118\u011b\5\62\32\2\u0119\u011b\7I\2\2\u011a"+
+		"\u0118\3\2\2\2\u011a\u0119\3\2\2\2\u011b\u011c\3\2\2\2\u011c\u011d\7J"+
 		"\2\2\u011d\u011f\3\2\2\2\u011e\u0104\3\2\2\2\u011e\u0113\3\2\2\2\u011f"+
-		"\65\3\2\2\2\u0120\u0121\5 \21\2\u0121\u0122\7F\2\2\u0122\u0124\3\2\2\2"+
+		"\65\3\2\2\2\u0120\u0121\5 \21\2\u0121\u0122\7G\2\2\u0122\u0124\3\2\2\2"+
 		"\u0123\u0120\3\2\2\2\u0124\u0127\3\2\2\2\u0125\u0123\3\2\2\2\u0125\u0126"+
 		"\3\2\2\2\u0126\u0128\3\2\2\2\u0127\u0125\3\2\2\2\u0128\u0129\5\"\22\2"+
 		"\u0129\67\3\2\2\2\u012a\u013b\5\66\34\2\u012b\u012c\5 \21\2\u012c\u012d"+
-		"\7L\2\2\u012d\u012e\t\13\2\2\u012e\u012f\7K\2\2\u012f\u0131\3\2\2\2\u0130"+
-		"\u0132\7F\2\2\u0131\u0130\3\2\2\2\u0131\u0132\3\2\2\2\u0132\u0134\3\2"+
+		"\7M\2\2\u012d\u012e\t\f\2\2\u012e\u012f\7L\2\2\u012f\u0131\3\2\2\2\u0130"+
+		"\u0132\7G\2\2\u0131\u0130\3\2\2\2\u0131\u0132\3\2\2\2\u0132\u0134\3\2"+
 		"\2\2\u0133\u012b\3\2\2\2\u0134\u0135\3\2\2\2\u0135\u0133\3\2\2\2\u0135"+
 		"\u0136\3\2\2\2\u0136\u0138\3\2\2\2\u0137\u0139\58\35\2\u0138\u0137\3\2"+
 		"\2\2\u0138\u0139\3\2\2\2\u0139\u013b\3\2\2\2\u013a\u012a\3\2\2\2\u013a"+
-		"\u0133\3\2\2\2\u013b9\3\2\2\2\u013c\u013d\7J\2\2\u013d\u0142\5*\26\2\u013e"+
-		"\u013f\7G\2\2\u013f\u0141\5*\26\2\u0140\u013e\3\2\2\2\u0141\u0144\3\2"+
+		"\u0133\3\2\2\2\u013b9\3\2\2\2\u013c\u013d\7K\2\2\u013d\u0142\5*\26\2\u013e"+
+		"\u013f\7H\2\2\u013f\u0141\5*\26\2\u0140\u013e\3\2\2\2\u0141\u0144\3\2"+
 		"\2\2\u0142\u0140\3\2\2\2\u0142\u0143\3\2\2\2\u0143\u0145\3\2\2\2\u0144"+
-		"\u0142\3\2\2\2\u0145\u0146\7I\2\2\u0146;\3\2\2\2\u0147\u014c\5 \21\2\u0148"+
-		"\u0149\7G\2\2\u0149\u014b\5 \21\2\u014a\u0148\3\2\2\2\u014b\u014e\3\2"+
+		"\u0142\3\2\2\2\u0145\u0146\7J\2\2\u0146;\3\2\2\2\u0147\u014c\5 \21\2\u0148"+
+		"\u0149\7H\2\2\u0149\u014b\5 \21\2\u014a\u0148\3\2\2\2\u014b\u014e\3\2"+
 		"\2\2\u014c\u014a\3\2\2\2\u014c\u014d\3\2\2\2\u014d=\3\2\2\2\u014e\u014c"+
-		"\3\2\2\2\u014f\u0156\5@!\2\u0150\u0152\t\f\2\2\u0151\u0150\3\2\2\2\u0151"+
+		"\3\2\2\2\u014f\u0156\5@!\2\u0150\u0152\t\r\2\2\u0151\u0150\3\2\2\2\u0151"+
 		"\u0152\3\2\2\2\u0152\u0153\3\2\2\2\u0153\u0155\5@!\2\u0154\u0151\3\2\2"+
 		"\2\u0155\u0158\3\2\2\2\u0156\u0154\3\2\2\2\u0156\u0157\3\2\2\2\u0157?"+
 		"\3\2\2\2\u0158\u0156\3\2\2\2\u0159\u0162\5T+\2\u015a\u015b\7 \2\2\u015b"+
@@ -3784,34 +3788,34 @@ public class jsonLogSqlParser extends Parser {
 		"\3\2\2\2\u0161\u0163\3\2\2\2\u0162\u015a\3\2\2\2\u0162\u0163\3\2\2\2\u0163"+
 		"\u0165\3\2\2\2\u0164\u0166\5J&\2\u0165\u0164\3\2\2\2\u0165\u0166\3\2\2"+
 		"\2\u0166\u0168\3\2\2\2\u0167\u0169\5N(\2\u0168\u0167\3\2\2\2\u0168\u0169"+
-		"\3\2\2\2\u0169\u016b\3\2\2\2\u016a\u016c\7D\2\2\u016b\u016a\3\2\2\2\u016b"+
+		"\3\2\2\2\u0169\u016b\3\2\2\2\u016a\u016c\7E\2\2\u016b\u016a\3\2\2\2\u016b"+
 		"\u016c\3\2\2\2\u016cA\3\2\2\2\u016d\u016e\7\37\2\2\u016e\u016f\5*\26\2"+
 		"\u016fC\3\2\2\2\u0170\u0171\7\34\2\2\u0171\u0172\7\35\2\2\u0172\u0177"+
-		"\5F$\2\u0173\u0174\7G\2\2\u0174\u0176\5F$\2\u0175\u0173\3\2\2\2\u0176"+
+		"\5F$\2\u0173\u0174\7H\2\2\u0174\u0176\5F$\2\u0175\u0173\3\2\2\2\u0176"+
 		"\u0179\3\2\2\2\u0177\u0175\3\2\2\2\u0177\u0178\3\2\2\2\u0178\u017b\3\2"+
 		"\2\2\u0179\u0177\3\2\2\2\u017a\u017c\5H%\2\u017b\u017a\3\2\2\2\u017b\u017c"+
-		"\3\2\2\2\u017cE\3\2\2\2\u017d\u0181\5\66\34\2\u017e\u0181\7V\2\2\u017f"+
+		"\3\2\2\2\u017cE\3\2\2\2\u017d\u0181\5\66\34\2\u017e\u0181\7W\2\2\u017f"+
 		"\u0181\5\64\33\2\u0180\u017d\3\2\2\2\u0180\u017e\3\2\2\2\u0180\u017f\3"+
 		"\2\2\2\u0181G\3\2\2\2\u0182\u0183\7\36\2\2\u0183\u0184\5*\26\2\u0184I"+
 		"\3\2\2\2\u0185\u0186\7\33\2\2\u0186\u0187\7\35\2\2\u0187\u018c\5L\'\2"+
-		"\u0188\u0189\7G\2\2\u0189\u018b\5L\'\2\u018a\u0188\3\2\2\2\u018b\u018e"+
+		"\u0188\u0189\7H\2\2\u0189\u018b\5L\'\2\u018a\u0188\3\2\2\2\u018b\u018e"+
 		"\3\2\2\2\u018c\u018a\3\2\2\2\u018c\u018d\3\2\2\2\u018dK\3\2\2\2\u018e"+
-		"\u018c\3\2\2\2\u018f\u0191\5F$\2\u0190\u0192\t\r\2\2\u0191\u0190\3\2\2"+
-		"\2\u0191\u0192\3\2\2\2\u0192M\3\2\2\2\u0193\u0197\7+\2\2\u0194\u0195\5"+
-		"P)\2\u0195\u0196\7G\2\2\u0196\u0198\3\2\2\2\u0197\u0194\3\2\2\2\u0197"+
+		"\u018c\3\2\2\2\u018f\u0191\5F$\2\u0190\u0192\t\16\2\2\u0191\u0190\3\2"+
+		"\2\2\u0191\u0192\3\2\2\2\u0192M\3\2\2\2\u0193\u0197\7+\2\2\u0194\u0195"+
+		"\5P)\2\u0195\u0196\7H\2\2\u0196\u0198\3\2\2\2\u0197\u0194\3\2\2\2\u0197"+
 		"\u0198\3\2\2\2\u0198\u0199\3\2\2\2\u0199\u019a\5R*\2\u019aO\3\2\2\2\u019b"+
-		"\u019c\7V\2\2\u019cQ\3\2\2\2\u019d\u019e\7V\2\2\u019eS\3\2\2\2\u019f\u01a1"+
-		"\7\"\2\2\u01a0\u01a2\t\f\2\2\u01a1\u01a0\3\2\2\2\u01a1\u01a2\3\2\2\2\u01a2"+
-		"\u01a3\3\2\2\2\u01a3\u01a8\5V,\2\u01a4\u01a5\7G\2\2\u01a5\u01a7\5V,\2"+
+		"\u019c\7W\2\2\u019cQ\3\2\2\2\u019d\u019e\7W\2\2\u019eS\3\2\2\2\u019f\u01a1"+
+		"\7\"\2\2\u01a0\u01a2\t\r\2\2\u01a1\u01a0\3\2\2\2\u01a1\u01a2\3\2\2\2\u01a2"+
+		"\u01a3\3\2\2\2\u01a3\u01a8\5V,\2\u01a4\u01a5\7H\2\2\u01a5\u01a7\5V,\2"+
 		"\u01a6\u01a4\3\2\2\2\u01a7\u01aa\3\2\2\2\u01a8\u01a6\3\2\2\2\u01a8\u01a9"+
-		"\3\2\2\2\u01a9U\3\2\2\2\u01aa\u01a8\3\2\2\2\u01ab\u01b9\7H\2\2\u01ac\u01ad"+
-		"\58\35\2\u01ad\u01ae\7F\2\2\u01ae\u01af\7H\2\2\u01af\u01b9\3\2\2\2\u01b0"+
+		"\3\2\2\2\u01a9U\3\2\2\2\u01aa\u01a8\3\2\2\2\u01ab\u01b9\7I\2\2\u01ac\u01ad"+
+		"\58\35\2\u01ad\u01ae\7G\2\2\u01ae\u01af\7I\2\2\u01af\u01b9\3\2\2\2\u01b0"+
 		"\u01b2\58\35\2\u01b1\u01b3\5$\23\2\u01b2\u01b1\3\2\2\2\u01b2\u01b3\3\2"+
 		"\2\2\u01b3\u01b9\3\2\2\2\u01b4\u01b6\5\64\33\2\u01b5\u01b7\5$\23\2\u01b6"+
 		"\u01b5\3\2\2\2\u01b6\u01b7\3\2\2\2\u01b7\u01b9\3\2\2\2\u01b8\u01ab\3\2"+
 		"\2\2\u01b8\u01ac\3\2\2\2\u01b8\u01b0\3\2\2\2\u01b8\u01b4\3\2\2\2\u01b9"+
-		"W\3\2\2\2\u01ba\u01bb\7V\2\2\u01bbY\3\2\2\2\u01bc\u01bd\7V\2\2\u01bd["+
-		"\3\2\2\2\u01be\u01bf\7V\2\2\u01bf]\3\2\2\2\64iy~\u008d\u0094\u0098\u009f"+
+		"W\3\2\2\2\u01ba\u01bb\7W\2\2\u01bbY\3\2\2\2\u01bc\u01bd\7W\2\2\u01bd["+
+		"\3\2\2\2\u01be\u01bf\7W\2\2\u01bf]\3\2\2\2\64iy~\u008d\u0094\u0098\u009f"+
 		"\u00a7\u00af\u00cc\u00d5\u00dc\u00e5\u00ec\u00f4\u00f8\u00fb\u0102\u010b"+
 		"\u010e\u0111\u0116\u011a\u011e\u0125\u0131\u0135\u0138\u013a\u0142\u014c"+
 		"\u0151\u0156\u015d\u0160\u0162\u0165\u0168\u016b\u0177\u017b\u0180\u018c"+

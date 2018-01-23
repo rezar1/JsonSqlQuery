@@ -182,6 +182,8 @@ public class JsonLogSqlAnalyzer extends jsonLogSqlBaseListener {
 				functionName = "SECOND";
 			} else if (timeF.YEAR() != null) {
 				functionName = "YEAH";
+			} else if (timeF.FORMAT_DATE() != null) {
+				functionName = "FORMAT_DATE";
 			}
 		} else if (char_functions != null) {
 			// TODO

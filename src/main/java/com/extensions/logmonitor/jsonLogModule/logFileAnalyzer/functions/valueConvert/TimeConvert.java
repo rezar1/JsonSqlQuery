@@ -5,6 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * 
  * @say little Boy, don't be sad.
@@ -13,6 +15,7 @@ import java.util.Date;
  * @Desc this guy is to lazy , noting left.
  *
  */
+@Slf4j
 public class TimeConvert implements ValueConvert {
 
 	private String timeFormat = "yyyy-MM-dd HH:mm:ss.SSSZ";
@@ -28,8 +31,12 @@ public class TimeConvert implements ValueConvert {
 				calendar.setTime(parse);
 				return calendar.get(field);
 			} catch (ParseException e) {
-				e.printStackTrace();
+				log.error("error while parse timeStr:{} with format:{}", value, this.timeFormat);
 			}
+		} else if (value instanceof Number) {
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTime(new Date(((Number) value).longValue()));
+			return calendar.get(field);
 		}
 		return value;
 	}
