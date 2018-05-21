@@ -1,21 +1,16 @@
 package com.extensions.logmonitor.logFileAnalyzer;
 
-import static com.extensions.logmonitor.Constants.METRIC_PATH_SEPARATOR;
-
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
 import org.apache.commons.io.filefilter.WildcardFileFilter;
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.StopWatch;
 
 import com.extensions.kienerj.OptimizedRandomAccessFile;
-import com.extensions.logmonitor.Constants;
 import com.extensions.logmonitor.MultiLogAnalyzerResult;
 import com.extensions.logmonitor.config.CommonConfig;
 import com.extensions.logmonitor.config.LogJsonAnalyzer;
@@ -62,9 +57,8 @@ public class LogMonitorTaskForJsonAnalyzer implements Callable<MultiLogAnalyzerR
 			}
 			watch.split();
 			System.out.println("scan all lines use:" + watch.getSplitTime() + " ms");
-			logMetrics.add(getLogNamePrefix() + Constants.FILESIZE_METRIC_NAME, BigInteger.valueOf(fileSize));
 			setNewFilePointer(dynamicLogPath, file.getPath(), curFilePointer);
-			analyzerQuery();
+			analyzerQuery(logMetrics);
 			log.info(String.format("Successfully processed log file [%s] -- %s", file.getPath(), curFilePointer));
 		} finally {
 			if (randomAccessFile != null) {
@@ -78,14 +72,17 @@ public class LogMonitorTaskForJsonAnalyzer implements Callable<MultiLogAnalyzerR
 	}
 
 	/**
+	 * @param logMetrics
 	 * 
 	 */
-	private void analyzerQuery() {
+	public void analyzerQuery(MultiLogAnalyzerResult logMetrics) {
 		Set<String> allHandleLogEventTypes = this.logJsonAnalyzer.getAllHandleLogEventTypes();
 		for (String logEventType : allHandleLogEventTypes) {
 			JsonLogDataQueryHandler findJsonLogDataQueryHandler = this.logJsonAnalyzer
 					.findJsonLogDataQueryHandler(logEventType);
-			findJsonLogDataQueryHandler.doAnalyzerResult();
+			logMetrics.addResult(logEventType, findJsonLogDataQueryHandler.doAnalyzerResult());
+			// retResultMapsWithLogEventTypes.put(logEventType,
+			// findJsonLogDataQueryHandler.doAnalyzerResult());
 		}
 	}
 
@@ -201,10 +198,12 @@ public class LogMonitorTaskForJsonAnalyzer implements Callable<MultiLogAnalyzerR
 		filePointerProcessor.updateFilePointer(dynamicLogPath, actualLogPath, lastReadPosition);
 	}
 
-	private String getLogNamePrefix() {
-		String displayName = StringUtils.isBlank(logJsonAnalyzer.getDisplayName()) ? logJsonAnalyzer.getLogName()
-				: logJsonAnalyzer.getDisplayName();
-		return displayName + METRIC_PATH_SEPARATOR;
-	}
+	// private String getLogNamePrefix() {
+	// String displayName =
+	// StringUtils.isBlank(logJsonAnalyzer.getDisplayName()) ?
+	// logJsonAnalyzer.getLogName()
+	// : logJsonAnalyzer.getDisplayName();
+	// return displayName + METRIC_PATH_SEPARATOR;
+	// }
 
 }

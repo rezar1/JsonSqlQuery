@@ -1,12 +1,10 @@
 package com.extensions.logmonitor.jsonLogModule.jsonLogSelectParser;
 
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -19,7 +17,6 @@ import com.extensions.logmonitor.jsonContentParseies.jsonAntlr4Parser.jsonParser
 import com.extensions.logmonitor.jsonLogModule.logFileAnalyzer.dataCache.selectDataCache.QueryResultDataItem;
 import com.extensions.logmonitor.jsonLogModule.queryExecute.QueryExecutor;
 import com.extensions.logmonitor.util.BatchTimeWatcher;
-import com.extensions.logmonitor.util.JacksonUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class JsonLogDataQueryHandler {
 
-	private File resultFile;
+	// private File resultFile;
 
 	private List<QueryExecutor> queryExecutors;
 	private JsonContentVisitor2 visitor;
@@ -53,13 +50,15 @@ public class JsonLogDataQueryHandler {
 		this.visitor = new JsonContentVisitor2(queryExecutors);
 		this.handler = new MultiJsonLogDataQueryHandler(this);
 		this.handler.startWork();
-		this.resultFile = new File("./result_" + System.currentTimeMillis() + ".rs");
-		try {
-			this.resultFile.createNewFile();
-			System.out.println("result file path:" + this.resultFile.getAbsolutePath());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		// this.resultFile = new File("./result_" + System.currentTimeMillis() +
+		// ".rs");
+		// try {
+		// this.resultFile.createNewFile();
+		// System.out.println("result file path:" +
+		// this.resultFile.getAbsolutePath());
+		// } catch (IOException e) {
+		// e.printStackTrace();
+		// }
 	}
 
 	public void wirteString(String lineLog) {
@@ -86,22 +85,21 @@ public class JsonLogDataQueryHandler {
 		}
 	}
 
-	public void doAnalyzerResult() {
+	public List<Map<String, Object>> doAnalyzerResult() {
 		this.handler.over();
-		try {
-			PrintWriter pw = new PrintWriter(new FileOutputStream(resultFile), true);
-			for (QueryExecutor qe : this.queryExecutors) {
-				System.out.println("\nfor logEventType:" + qe.getFromTableLogName() + "handle results are:");
-				List<QueryResultDataItem> doHandle = qe.doHandle();
-				for (QueryResultDataItem qrdi : doHandle) {
-					pw.println(JacksonUtil.obj2Str(qrdi.getQueryResult()));
-				}
+		List<Map<String, Object>> retLines = new ArrayList<>();
+		// PrintWriter pw = new PrintWriter(new FileOutputStream(resultFile),
+		// true);
+		for (QueryExecutor qe : this.queryExecutors) {
+			System.out.println("\nfor logEventType:" + qe.getFromTableLogName() + "handle results are:");
+			List<QueryResultDataItem> doHandle = qe.doHandle();
+			for (QueryResultDataItem qrdi : doHandle) {
+				retLines.add(qrdi.getQueryResult());
+				// pw.println(JacksonUtil.obj2Str(qrdi.getQueryResult()));
 			}
-			pw.close();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
+		// pw.close();
+		return retLines;
 	}
 
 	/**

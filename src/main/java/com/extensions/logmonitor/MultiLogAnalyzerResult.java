@@ -1,41 +1,19 @@
 package com.extensions.logmonitor;
 
-import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-import org.apache.commons.lang.builder.ToStringStyle;
+public class MultiLogAnalyzerResult {
 
-public class MultiLogAnalyzerResult { 
+	private Map<String, List<Map<String, Object>>> logEventTypeResultMaps = new HashMap<>();
 
-	private Map<String, BigInteger> metrics = new ConcurrentHashMap<String, BigInteger>();
-
-	public void add(String metricName) {
-		BigInteger value = metrics.get(metricName);
-		if (value != null) {
-			value = value.add(BigInteger.ONE);
-		} else {
-			value = BigInteger.ONE;
-		}
-		add(metricName, value);
+	public List<Map<String, Object>> getResult(String logEventType) {
+		return this.logEventTypeResultMaps.get(logEventType);
 	}
 
-	public void add(String metricName, BigInteger value) {
-		this.metrics.put(metricName, value);
-	}
-
-	public void addAll(Map<String, BigInteger> metrics) {
-		this.metrics.putAll(metrics);
-	}
-
-	public Map<String, BigInteger> getMetrics() {
-		return this.metrics;
-	}
-
-	@Override
-	public String toString() {
-		return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
+	public void addResult(String logEventType, List<Map<String, Object>> result) {
+		this.logEventTypeResultMaps.put(logEventType, result);
 	}
 
 }
