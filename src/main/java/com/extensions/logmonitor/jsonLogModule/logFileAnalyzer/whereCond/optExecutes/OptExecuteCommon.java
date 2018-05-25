@@ -105,6 +105,9 @@ public abstract class OptExecuteCommon<M> implements OptExecute {
 	}
 
 	/**
+	 * 
+	 * 有bug,后面再弄吧 ,空值的判断
+	 * 
 	 * @param value
 	 * @return
 	 */
@@ -154,9 +157,48 @@ public abstract class OptExecuteCommon<M> implements OptExecute {
 		} else if (value instanceof Boolean) {
 			return this.compareasBoolean(Boolean.parseBoolean(matchValue.toString()),
 					Boolean.parseBoolean(value.toString()));
+		} else if (value == null) {
+			return this.compareAsNullWithTryToMatch();
 		} else {
 			throw new WrongMatchTypeException(this.getOptType(), matchValue, null);
 		}
+	}
+
+	/**
+	 * @param value
+	 * @return
+	 */
+	private boolean compareAsNullWithTryToMatch() {
+		switch (this.getOptType()) {
+		case eq:
+			return false;
+		case notEq:
+			return true;
+		case lt:
+			return true;
+		case gt:
+			return false;
+		case gte:
+			return false;
+		case lte:
+			return true;
+		case like:
+			return false;
+		case notLike:
+			return true;
+		default:
+			throw new WrongMatchTypeException(this.getOptType(), matchValue, null);
+		}
+	}
+
+	public static void main(String[] args) {
+		OptExecuteCommon<String> opt = new OptExecuteCommon<String>("name") {
+			@Override
+			protected String getOptType() {
+				return "=";
+			}
+		};
+		opt.singleValueMatch("zmt", null);
 	}
 
 	/**
@@ -238,7 +280,7 @@ public abstract class OptExecuteCommon<M> implements OptExecute {
 		} else if (this.getOptType() == isNotNull) {
 			return value != null;
 		} else {
-			throw new WrongMatchTypeException(this.getOptType(), matchValue, null);
+			return false;
 		}
 	}
 

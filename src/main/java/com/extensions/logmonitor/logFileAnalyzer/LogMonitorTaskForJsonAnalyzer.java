@@ -28,7 +28,7 @@ public class LogMonitorTaskForJsonAnalyzer implements Callable<MultiLogAnalyzerR
 
 	private FilePointerProcessor filePointerProcessor;
 	private LogJsonAnalyzer logJsonAnalyzer;
-	private static final StopWatch watch = new StopWatch();
+	private final StopWatch watch = new StopWatch();
 
 	public LogMonitorTaskForJsonAnalyzer(FilePointerProcessor filePointerProcessor, LogJsonAnalyzer logJsonAnalyzer) {
 		this.filePointerProcessor = filePointerProcessor;
@@ -36,7 +36,7 @@ public class LogMonitorTaskForJsonAnalyzer implements Callable<MultiLogAnalyzerR
 	}
 
 	public MultiLogAnalyzerResult call() throws Exception {
-		String dirPath = resolveDirPath(logJsonAnalyzer.getLogDirectory());
+		String dirPath = logJsonAnalyzer.getLogDirectory();
 		log.info("Log monitor task started...");
 		MultiLogAnalyzerResult logMetrics = new MultiLogAnalyzerResult();
 		OptimizedRandomAccessFile randomAccessFile = null;
@@ -80,7 +80,7 @@ public class LogMonitorTaskForJsonAnalyzer implements Callable<MultiLogAnalyzerR
 		for (String logEventType : allHandleLogEventTypes) {
 			JsonLogDataQueryHandler findJsonLogDataQueryHandler = this.logJsonAnalyzer
 					.findJsonLogDataQueryHandler(logEventType);
-			logMetrics.addResult(logEventType, findJsonLogDataQueryHandler.doAnalyzerResult());
+			logMetrics.addResult(findJsonLogDataQueryHandler.doAnalyzerResult());
 			// retResultMapsWithLogEventTypes.put(logEventType,
 			// findJsonLogDataQueryHandler.doAnalyzerResult());
 		}

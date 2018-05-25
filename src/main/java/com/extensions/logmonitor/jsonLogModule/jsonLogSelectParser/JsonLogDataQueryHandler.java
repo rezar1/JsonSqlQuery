@@ -3,6 +3,7 @@ package com.extensions.logmonitor.jsonLogModule.jsonLogSelectParser;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -85,21 +86,23 @@ public class JsonLogDataQueryHandler {
 		}
 	}
 
-	public List<Map<String, Object>> doAnalyzerResult() {
+	public Map<QueryExecutor, List<Map<String, Object>>> doAnalyzerResult() {
 		this.handler.over();
-		List<Map<String, Object>> retLines = new ArrayList<>();
+		Map<QueryExecutor, List<Map<String, Object>>> retMap = new HashMap<>();
 		// PrintWriter pw = new PrintWriter(new FileOutputStream(resultFile),
 		// true);
 		for (QueryExecutor qe : this.queryExecutors) {
 			System.out.println("\nfor logEventType:" + qe.getFromTableLogName() + "handle results are:");
 			List<QueryResultDataItem> doHandle = qe.doHandle();
+			List<Map<String, Object>> retLines = new ArrayList<>();
 			for (QueryResultDataItem qrdi : doHandle) {
 				retLines.add(qrdi.getQueryResult());
 				// pw.println(JacksonUtil.obj2Str(qrdi.getQueryResult()));
 			}
+			retMap.put(qe, retLines);
 		}
 		// pw.close();
-		return retLines;
+		return retMap;
 	}
 
 	/**

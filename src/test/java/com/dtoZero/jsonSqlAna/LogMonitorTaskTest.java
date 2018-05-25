@@ -12,6 +12,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import com.extensions.logmonitor.MultiLogAnalyzerResult;
 import com.extensions.logmonitor.config.CommonConfig;
 import com.extensions.logmonitor.config.LogJsonAnalyzer;
 import com.extensions.logmonitor.config.SearchInfo;
@@ -76,7 +77,8 @@ public class LogMonitorTaskTest {
 		logJsonAnalyzer.addSearchInfo(searchInfo);
 		LogMonitorTaskForJsonAnalyzer analyzer = new LogMonitorTaskForJsonAnalyzer(mockFilePointerProcessor,
 				logJsonAnalyzer);
-		analyzer.call();
+		MultiLogAnalyzerResult call = analyzer.call();
+		System.out.println(call.toString());
 	}
 
 	@Test

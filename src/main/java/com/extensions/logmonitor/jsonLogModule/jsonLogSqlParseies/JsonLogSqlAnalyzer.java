@@ -594,7 +594,7 @@ public class JsonLogSqlAnalyzer extends jsonLogSqlBaseListener {
 				matchPath = handleArrayColumnSpace(acpc).toString();
 			}
 		}
-		if (GenericsUtils.isNullOrEmpty(matchPath)) {
+		if (GenericsUtils.isNullOrEmpty(matchPath) || matchPath.equals(OptExecute.FUN_CALL_PREFIX)) {
 			optExecute.setIsSelfCall(true);
 		}
 		return matchPath;
