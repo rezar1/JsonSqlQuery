@@ -9,7 +9,6 @@ import static com.extensions.logmonitor.Constants.THREAD_TIMEOUT;
 import static com.extensions.logmonitor.config.LogConfigValidator.validate;
 
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,10 +24,6 @@ import java.util.concurrent.TimeoutException;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.ConsoleAppender;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.apache.log4j.PatternLayout;
 
 import com.extensions.logmonitor.config.Configuration;
 import com.extensions.logmonitor.config.Log;
@@ -41,27 +36,28 @@ import com.singularity.ee.agent.systemagent.api.TaskExecutionContext;
 import com.singularity.ee.agent.systemagent.api.TaskOutput;
 import com.singularity.ee.agent.systemagent.api.exception.TaskExecutionException;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Monitors the log file and counts the no of occurrences of the search terms
  * provided
  *
  * @author Florencio Sarmiento
  */
+@Slf4j
 public class LogMonitor extends AManagedMonitor {
-
-	public static final Logger LOGGER = Logger.getLogger(LogMonitor.class);
 
 	private volatile FilePointerProcessor filePointerProcessor;
 
 	public LogMonitor() {
-		LOGGER.info(String.format("Using Log Monitor Version [%s]", getImplementationVersion()));
+		log.info(String.format("Using Log Monitor Version [%s]", getImplementationVersion()));
 		filePointerProcessor = new FilePointerProcessor();
 	}
 
 	public TaskOutput execute(Map<String, String> args, TaskExecutionContext arg1) throws TaskExecutionException {
-		LOGGER.info("Starting the Logger Monitoring task");
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug(String.format("Args received were: %s", args));
+		log.info("Starting the Logger Monitoring task");
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("Args received were: %s", args));
 		}
 		if (args != null) {
 			ExecutorService threadPool = null;
@@ -89,7 +85,7 @@ public class LogMonitor extends AManagedMonitor {
 					return new TaskOutput("Log Monitoring task successfully completed");
 				}
 			} catch (Exception ex) {
-				LOGGER.error("Unfortunately an issue has occurred: ", ex);
+				log.error("Unfortunately an issue has occurred: ", ex);
 			} finally {
 				if (threadPool != null && !threadPool.isShutdown()) {
 					threadPool.shutdown();
@@ -112,13 +108,12 @@ public class LogMonitor extends AManagedMonitor {
 	private List<Log> getValidLogConfigs(Configuration config) {
 		List<Log> validLogs = new ArrayList<Log>();
 
-		for (Log log : config.getLogs()) {
+		for (Log logItem : config.getLogs()) {
 			try {
-				validate(log);
-				validLogs.add(log);
-
+				validate(logItem);
+				validLogs.add(logItem);
 			} catch (IllegalArgumentException ex) {
-				LOGGER.error("Invalid config: " + log, ex);
+				log.error("Invalid config: " + log, ex);
 			}
 		}
 
@@ -132,11 +127,11 @@ public class LogMonitor extends AManagedMonitor {
 				LogMetrics collectedMetrics = parallelTasks.take().get(THREAD_TIMEOUT, TimeUnit.SECONDS);
 				metrics.addAll(collectedMetrics.getMetrics());
 			} catch (InterruptedException e) {
-				LOGGER.error("Task interrupted. ", e);
+				log.error("Task interrupted. ", e);
 			} catch (ExecutionException e) {
-				LOGGER.error("Task execution failed. ", e);
+				log.error("Task execution failed. ", e);
 			} catch (TimeoutException e) {
-				LOGGER.error("Task timed out. ", e);
+				log.error("Task timed out. ", e);
 			}
 		}
 		return metrics;
@@ -175,8 +170,8 @@ public class LogMonitor extends AManagedMonitor {
 			String cluster) {
 		MetricWriter metricWriter = getMetricWriter(metricName, aggregation, timeRollup, cluster);
 		BigInteger valueToReport = LogMonitorUtil.convertValueToZeroIfNullOrNegative(metricValue);
-		if (LOGGER.isDebugEnabled()) {
-			LOGGER.debug(String.format("Sending [%s/%s/%s] metric = %s = %s => %s", aggregation, timeRollup, cluster,
+		if (log.isDebugEnabled()) {
+			log.debug(String.format("Sending [%s/%s/%s] metric = %s = %s => %s", aggregation, timeRollup, cluster,
 					metricName, metricValue, valueToReport));
 		}
 		metricWriter.printMetric(valueToReport.toString());
@@ -186,20 +181,19 @@ public class LogMonitor extends AManagedMonitor {
 		return LogMonitor.class.getPackage().getImplementationTitle();
 	}
 
-	@SuppressWarnings("static-access")
 	public static void main(String[] args) throws TaskExecutionException, IOException {
-		ConsoleAppender ca = new ConsoleAppender();
-		ca.setWriter(new OutputStreamWriter(System.out));
-		ca.setLayout(new PatternLayout("%-5p [%t]: %m%n"));
-		ca.setThreshold(Level.DEBUG);
-		LOGGER.getRootLogger().addAppender(ca);
-		LogMonitor monitor = new LogMonitor();
-
-		Map<String, String> taskArgs = new HashMap<String, String>();
-		taskArgs.put(CONFIG_ARG,
-				"/Users/aditya.jagtiani/repos/appdynamics/extensions/log-monitoring-extension/src/main/resources/conf/config.yaml");
-
-		monitor.execute(taskArgs, null);
+		// ConsoleAppender ca = new ConsoleAppender();
+		// ca.setWriter(new OutputStreamWriter(System.out));
+		// ca.setLayout(new PatternLayout("%-5p [%t]: %m%n"));
+		// ca.setThreshold(Level.DEBUG);
+		// log.getRootLogger().addAppender(ca);
+		// LogMonitor monitor = new LogMonitor();
+		//
+		// Map<String, String> taskArgs = new HashMap<String, String>();
+		// taskArgs.put(CONFIG_ARG,
+		// "/Users/aditya.jagtiani/repos/appdynamics/extensions/log-monitoring-extension/src/main/resources/conf/config.yaml");
+		//
+		// monitor.execute(taskArgs, null);
 
 	}
 

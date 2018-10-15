@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration status="INFO">
+	<Appenders>
+		<Console name="stout" target="SYSTEM_OUT">
+		</Console>
+	</Appenders>
+	<Loggers>
+		<!-- 配置日志的根节点 -->
+		<root level="all">
+			<appender-ref ref="stout" />
+		</root>
+	</Loggers>
+</configuration>

@@ -30,6 +30,11 @@ public class LogJsonAnalyzer {
 	private String logDirectory;
 	private String logName;
 
+	public LogJsonAnalyzer(String logDirectory, String logName) {
+		this.logDirectory = logDirectory;
+		this.logName = logName;
+	}
+
 	public LogJsonAnalyzer(String displayName, String logDirectory, String logName) {
 		this.displayName = displayName;
 		this.logDirectory = logDirectory;

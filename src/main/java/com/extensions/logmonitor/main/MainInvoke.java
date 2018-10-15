@@ -1,21 +1,16 @@
 package com.extensions.logmonitor.main;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
-import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
-
-import com.extensions.logmonitor.config.CommonConfig;
+import com.beust.jcommander.JCommander;
 import com.extensions.logmonitor.config.LogJsonAnalyzer;
 import com.extensions.logmonitor.config.SearchInfo;
 import com.extensions.logmonitor.logFileAnalyzer.LogMonitorTaskForJsonAnalyzer;
 import com.extensions.logmonitor.processors.FilePointerProcessor;
-import com.extensions.logmonitor.util.GenericsUtils;
+import com.extensions.logmonitor.util.JacksonUtil;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 
@@ -25,87 +20,35 @@ import com.extensions.logmonitor.util.GenericsUtils;
  * @Desc this guy is to lazy , noting left.
  *
  */
+@Slf4j
 public class MainInvoke {
 
 	private static FilePointerProcessor filePointerProcessor;
 
 	public static void main(String[] args) throws Exception {
-		if (args == null || args.length < 1) {
-			System.out.println("need request param:\n1:configReadPath eg:/Users/rezar/Desktop/sspCount.conf");
-			System.exit(1);
+		JSqlComandLineOptions options = new JSqlComandLineOptions();
+		JCommander jCommander = JCommander.newBuilder().programName("").addObject(options).build();
+		jCommander.parse(args);
+		if (options.isHelp()) {
+			jCommander.usage();
+			return;
 		}
-
-		String configReadPath = args[0];
-		String[] configs = parserFile(configReadPath);
-		if (GenericsUtils.isNullOrEmpty(configs)) {
-			throw new IllegalArgumentException("can not find any config in file:" + configReadPath);
-		}
-		String logDirectory = changeFileString(configs[0]);
-		String logName = configs[1];
+		log.info("JSqlComandLineOptions are:{}", JacksonUtil.obj2Str(options));
+		String logDirectory = changeFileString(options.getDir());
+		String dynLogName = options.getFilePattern();
 		logDirectory = changeFileString(logDirectory);
-		String logSql = configs[2];
-		System.out.println("logDirectory is:" + logDirectory);
-		System.out.println("logFileName is:" + logName);
-		System.out.println("logFileQuerySql is:" + logSql);
-		if (args.length > 1) {
-			String batchWatchSizeStr = args[1];
-			if (StringUtils.isNumeric(batchWatchSizeStr)) {
-				CommonConfig.watchBatchSize = Integer.parseInt(batchWatchSizeStr);
-			}
-		}
-		if (args.length > 2) {
-			String defaultEventType = args[2];
-			CommonConfig.defaultLogEventType = defaultEventType;
-		}
+		List<String> jsonSql = options.getJsonSql();
 		filePointerProcessor = new FilePointerProcessor();
-		LogJsonAnalyzer logJsonAnalyzer = new LogJsonAnalyzer("Rezar", logDirectory, logName);
-		SearchInfo searchInfo = new SearchInfo(logSql);
-		logJsonAnalyzer.addSearchInfo(searchInfo);
+		LogJsonAnalyzer logJsonAnalyzer = new LogJsonAnalyzer(logDirectory, dynLogName);
+		for (String jSql : jsonSql) {
+			SearchInfo searchInfo = new SearchInfo(jSql);
+			logJsonAnalyzer.addSearchInfo(searchInfo);
+		}
 		LogMonitorTaskForJsonAnalyzer analyzer = new LogMonitorTaskForJsonAnalyzer(filePointerProcessor,
 				logJsonAnalyzer);
 		analyzer.call();
-		FileUtils.deleteDirectory(CommonConfig.tempFilePath);
+		// FileUtils.deleteDirectory(CommonConfig.tempFilePath);
 	}
-
-	/**
-	 * @param configReadPath
-	 * @return
-	 */
-	private static String[] parserFile(String configReadPath) {
-		File file = new File(configReadPath);
-		if (!file.exists()) {
-			throw new IllegalArgumentException(configReadPath + " \t not exists!!!");
-		}
-		BufferedReader reader = null;
-		List<String> configs = new ArrayList<>();
-		try {
-			reader = new BufferedReader(new FileReader(file));
-			String line = null;
-			while ((line = reader.readLine()) != null) {
-				configs.add(line);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new IllegalArgumentException(configReadPath + "\t can not read!!!");
-		} finally {
-			if (reader != null) {
-				IOUtils.closeQuietly(reader);
-			}
-		}
-		return configs.toArray(new String[configs.size()]);
-	}
-
-	/**
-	 * @param args
-	 * @return
-	 */
-	// private static String createQuerySql(String[] args) {
-	// StringBuilder sb = new StringBuilder();
-	// for (int i = 2; i < args.length; i++) {
-	// sb.append(args[i]).append(" ");
-	// }
-	// return sb.toString();
-	// }
 
 	/**
 	 * @param logDirectory
