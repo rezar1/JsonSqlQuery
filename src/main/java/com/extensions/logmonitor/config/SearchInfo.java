@@ -4,6 +4,7 @@ import com.extensions.logmonitor.jsonLogModule.jsonLogSelectParser.JsonLogQueryS
 import com.extensions.logmonitor.jsonLogModule.queryExecute.QueryExecutor;
 
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 
@@ -14,6 +15,7 @@ import lombok.Data;
  *
  */
 @Data
+@Slf4j
 public class SearchInfo {
 
 	private String logType;
@@ -28,7 +30,7 @@ public class SearchInfo {
 		this.queryExecutor = JsonLogQuerySqlParser.createQueryExecutor(selectQuery);
 		this.logType = this.queryExecutor.getFromTableLogName();
 		this.queryExecutor.setResultPrint(resultPrint);
-		System.out.println("SearchInfo:" + this);
+		log.info("SearchInfo is:{}", this);
 	}
 
 }

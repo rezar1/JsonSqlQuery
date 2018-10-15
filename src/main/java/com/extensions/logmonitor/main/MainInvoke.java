@@ -4,9 +4,10 @@ import java.io.File;
 import java.util.List;
 
 import com.beust.jcommander.JCommander;
+import com.extensions.logmonitor.MultiLogAnalyzerResult;
 import com.extensions.logmonitor.config.LogJsonAnalyzer;
 import com.extensions.logmonitor.config.SearchInfo;
-import com.extensions.logmonitor.logFileAnalyzer.LogMonitorTaskForJsonAnalyzer;
+import com.extensions.logmonitor.logFileAnalyzer.LogMonitorToJsonAnalyWithWildFiles;
 import com.extensions.logmonitor.processors.FilePointerProcessor;
 import com.extensions.logmonitor.util.JacksonUtil;
 
@@ -44,9 +45,10 @@ public class MainInvoke {
 			SearchInfo searchInfo = new SearchInfo(jSql);
 			logJsonAnalyzer.addSearchInfo(searchInfo);
 		}
-		LogMonitorTaskForJsonAnalyzer analyzer = new LogMonitorTaskForJsonAnalyzer(filePointerProcessor,
+		LogMonitorToJsonAnalyWithWildFiles analyzer = new LogMonitorToJsonAnalyWithWildFiles(filePointerProcessor,
 				logJsonAnalyzer);
-		analyzer.call();
+		MultiLogAnalyzerResult call = analyzer.call();
+		
 		// FileUtils.deleteDirectory(CommonConfig.tempFilePath);
 	}
 

@@ -32,39 +32,30 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class JsonLogDataQueryHandler {
 
-	// private File resultFile;
-
 	private List<QueryExecutor> queryExecutors;
 	private JsonContentVisitor2 visitor;
 	private MultiJsonLogDataQueryHandler handler;
-	public static BatchTimeWatcher watcher = new BatchTimeWatcher(CommonConfig.watchBatchSize,
-			new BatchTimeWatcher.BatchWatchOutput() {
-				@Override
-				public void output(int batchIndex, int batchCount, int batchUseTime, long preTime, long currentTime) {
-					System.out.println("doInWalkers\t" + batchIndex + "\thandle " + batchCount + " visit use all time:"
-							+ batchUseTime + "\t" + (batchCount / (batchUseTime)) + " visit/ms");
-				}
-			});
+	// public static BatchTimeWatcher watcher = new
+	// BatchTimeWatcher(CommonConfig.watchBatchSize,
+	// new BatchTimeWatcher.BatchWatchOutput() {
+	// @Override
+	// public void output(int batchIndex, int batchCount, int batchUseTime, long
+	// preTime, long currentTime) {
+	// System.out.println("doInWalkers\t" + batchIndex + "\thandle " +
+	// batchCount + " visit use all time:"
+	// + batchUseTime + "\t" + (batchCount / (batchUseTime)) + " visit/ms");
+	// }
+	// });
 
 	public JsonLogDataQueryHandler(List<QueryExecutor> queryExecutors) {
 		this.queryExecutors = queryExecutors;
 		this.visitor = new JsonContentVisitor2(queryExecutors);
 		this.handler = new MultiJsonLogDataQueryHandler(this);
 		this.handler.startWork();
-		// this.resultFile = new File("./result_" + System.currentTimeMillis() +
-		// ".rs");
-		// try {
-		// this.resultFile.createNewFile();
-		// System.out.println("result file path:" +
-		// this.resultFile.getAbsolutePath());
-		// } catch (IOException e) {
-		// e.printStackTrace();
-		// }
 	}
 
 	public void wirteString(String lineLog) {
 		this.handler.writeString(lineLog);
-		// this.doHandle(lineLog);
 	}
 
 	public void doHandle(String lineLog) {
@@ -76,32 +67,25 @@ public class JsonLogDataQueryHandler {
 			CommonTokenStream tokens = new CommonTokenStream(lexer);
 			jsonParser parser = new jsonParser(tokens);
 			ParseTree tree = parser.jsonFile();
-			// watcher.countSingleTimeStart();
 			visitor.visit(tree);
-			// watcher.countSingleTimeEnd();
 			bais.reset();
 		} catch (IOException e) {
 			log.info("can not parse str:{}", lineLog);
-			// log.info("error while parser jsonLogString:{} ", e);
 		}
 	}
 
 	public Map<QueryExecutor, List<Map<String, Object>>> doAnalyzerResult() {
 		this.handler.over();
 		Map<QueryExecutor, List<Map<String, Object>>> retMap = new HashMap<>();
-		// PrintWriter pw = new PrintWriter(new FileOutputStream(resultFile),
-		// true);
 		for (QueryExecutor qe : this.queryExecutors) {
 			System.out.println("\nfor logEventType:" + qe.getFromTableLogName() + "handle results are:");
 			List<QueryResultDataItem> doHandle = qe.doHandle();
 			List<Map<String, Object>> retLines = new ArrayList<>();
 			for (QueryResultDataItem qrdi : doHandle) {
 				retLines.add(qrdi.getQueryResult());
-				// pw.println(JacksonUtil.obj2Str(qrdi.getQueryResult()));
 			}
 			retMap.put(qe, retLines);
 		}
-		// pw.close();
 		return retMap;
 	}
 

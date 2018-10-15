@@ -3,9 +3,9 @@ package com.extensions.logmonitor.logFileAnalyzer;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Callable;
 
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang.time.StopWatch;
@@ -14,60 +14,85 @@ import com.extensions.kienerj.OptimizedRandomAccessFile;
 import com.extensions.logmonitor.MultiLogAnalyzerResult;
 import com.extensions.logmonitor.config.CommonConfig;
 import com.extensions.logmonitor.config.LogJsonAnalyzer;
-import com.extensions.logmonitor.exceptions.FileException;
 import com.extensions.logmonitor.jsonLogModule.jsonLogSelectParser.JsonLogDataQueryHandler;
 import com.extensions.logmonitor.processors.FilePointer;
 import com.extensions.logmonitor.processors.FilePointerProcessor;
 import com.extensions.logmonitor.util.BatchTimeWatcher;
+import com.extensions.logmonitor.util.GenericsUtils;
+import com.extensions.logmonitor.util.LogMonitorUtil;
 
 import lombok.extern.slf4j.Slf4j;
 
+/**
+ * 
+ * 
+ * @say little Boy, don't be sad.
+ * @name Rezar
+ * @time 2018年10月13日 下午3:25:15
+ * @Desc 些年若许,不负芳华.
+ *
+ */
 @Slf4j
-public class LogMonitorTaskForJsonAnalyzer implements Callable<MultiLogAnalyzerResult> {
+public class LogMonitorToJsonAnalyWithWildFiles {
 
 	private FilePointerProcessor filePointerProcessor;
 	private LogJsonAnalyzer logJsonAnalyzer;
-	private final StopWatch watch = new StopWatch();
+	private static final StopWatch watch = new StopWatch();
 
-	public LogMonitorTaskForJsonAnalyzer(FilePointerProcessor filePointerProcessor, LogJsonAnalyzer logJsonAnalyzer) {
+	public LogMonitorToJsonAnalyWithWildFiles(FilePointerProcessor filePointerProcessor,
+			LogJsonAnalyzer logJsonAnalyzer) {
 		this.filePointerProcessor = filePointerProcessor;
 		this.logJsonAnalyzer = logJsonAnalyzer;
 	}
 
 	public MultiLogAnalyzerResult call() throws Exception {
-		String dirPath = logJsonAnalyzer.getLogDirectory();
+		String dirPath = resolveDirPath(logJsonAnalyzer.getLogDirectory());
 		log.info("Log monitor task started...");
-		MultiLogAnalyzerResult logMetrics = new MultiLogAnalyzerResult();
 		OptimizedRandomAccessFile randomAccessFile = null;
 		long curFilePointer = 0;
-		try {
-			File file = getLogFile(dirPath);
-			randomAccessFile = new OptimizedRandomAccessFile(file, "r");
-			long fileSize = randomAccessFile.length();
-			String dynamicLogPath = dirPath + logJsonAnalyzer.getLogName();
-			curFilePointer = getCurrentFilePointer(dynamicLogPath, file.getPath(), fileSize);
-			randomAccessFile.seek(curFilePointer);
-			String currentLine = null;
-			watch.start();
-			watch.split();
-			while ((currentLine = randomAccessFile.readLine()) != null) {
-				handleLine(currentLine, curFilePointer);
-				curFilePointer = randomAccessFile.getFilePointer();
-			}
-			watch.split();
-			System.out.println("scan all lines use:" + watch.getSplitTime() + " ms");
-			setNewFilePointer(dynamicLogPath, file.getPath(), curFilePointer);
-			analyzerQuery(logMetrics);
-			log.info(String.format("Successfully processed log file [%s] -- %s", file.getPath(), curFilePointer));
-		} finally {
-			if (randomAccessFile != null) {
-				try {
-					randomAccessFile.close();
-				} catch (IOException e) {
+		List<File> files = getLogFile(dirPath);
+		if (GenericsUtils.isNullOrEmpty(files)) {
+			log.info("empty files for dir:{} with jsonLogName:{}", dirPath, logJsonAnalyzer.getLogName());
+			return null;
+		}
+		for (File file : files) {
+			try {
+				randomAccessFile = new OptimizedRandomAccessFile(file, "r");
+				long fileSize = randomAccessFile.length();
+				String dynamicLogPath = dirPath + logJsonAnalyzer.getLogName();
+				curFilePointer = getCurrentFilePointer(dynamicLogPath, file.getPath(), fileSize);
+				randomAccessFile.seek(curFilePointer);
+				String currentLine = null;
+				watch.start();
+				watch.split();
+				while ((currentLine = randomAccessFile.readLine()) != null) {
+					handleLine(currentLine, curFilePointer);
+					curFilePointer = randomAccessFile.getFilePointer();
 				}
+				watch.split();
+				log.info("scan all lines use:" + watch.getSplitTime() + " ms");
+				setNewFilePointer(dynamicLogPath, file.getPath(), curFilePointer);
+				log.info(String.format("Successfully processed log file [%s] -- %s", file.getPath(), curFilePointer));
+			} finally {
+				LogMonitorUtil.closeRandomAccessFile(randomAccessFile);
 			}
 		}
-		return logMetrics;
+		MultiLogAnalyzerResult result = new MultiLogAnalyzerResult();
+		analyzerQuery(result);
+		return result;
+	}
+
+	/**
+	 * 
+	 */
+	@SuppressWarnings("unused")
+	private void analyzerQuery() {
+		Set<String> allHandleLogEventTypes = this.logJsonAnalyzer.getAllHandleLogEventTypes();
+		for (String logEventType : allHandleLogEventTypes) {
+			JsonLogDataQueryHandler findJsonLogDataQueryHandler = this.logJsonAnalyzer
+					.findJsonLogDataQueryHandler(logEventType);
+			findJsonLogDataQueryHandler.doAnalyzerResult();
+		}
 	}
 
 	/**
@@ -80,8 +105,6 @@ public class LogMonitorTaskForJsonAnalyzer implements Callable<MultiLogAnalyzerR
 			JsonLogDataQueryHandler findJsonLogDataQueryHandler = this.logJsonAnalyzer
 					.findJsonLogDataQueryHandler(logEventType);
 			logMetrics.addResult(findJsonLogDataQueryHandler.doAnalyzerResult());
-			// retResultMapsWithLogEventTypes.put(logEventType,
-			// findJsonLogDataQueryHandler.doAnalyzerResult());
 		}
 	}
 
@@ -131,16 +154,18 @@ public class LogMonitorTaskForJsonAnalyzer implements Callable<MultiLogAnalyzerR
 		}
 	}
 
-	private File getLogFile(String dirPath) throws FileNotFoundException {
+	private List<File> getLogFile(String dirPath) throws FileNotFoundException {
 		File directory = new File(dirPath);
-		File logFile = null;
+		List<File> needMonitorFiles = new ArrayList<File>();
 		if (directory.isDirectory()) {
 			FileFilter fileFilter = new WildcardFileFilter(logJsonAnalyzer.getLogName());
 			File[] files = directory.listFiles(fileFilter);
 			if (files != null && files.length > 0) {
-				logFile = getLatestFile(files);
-				if (!logFile.canRead()) {
-					throw new FileException(String.format("Unable to read file [%s]", logFile.getPath()));
+				for (File logFile : files) {
+					if (!logFile.canRead()) {
+						log.debug(String.format("Unable to read file [%s]", logFile.getPath()));
+					}
+					needMonitorFiles.add(logFile);
 				}
 			} else {
 				throw new FileNotFoundException(String.format("Unable to find any file with name [%s] in [%s]",
@@ -150,27 +175,15 @@ public class LogMonitorTaskForJsonAnalyzer implements Callable<MultiLogAnalyzerR
 			throw new FileNotFoundException(
 					String.format("Directory [%s] not found. Ensure it is a directory.", dirPath));
 		}
-		return logFile;
+		return needMonitorFiles;
 	}
 
-	// private String resolveDirPath(String confDirPath) {
-	// String resolvedPath = LogMonitorUtil.resolvePath(confDirPath);
-	// if (!resolvedPath.endsWith(File.separator)) {
-	// resolvedPath = resolvedPath + File.separator;
-	// }
-	// return resolvedPath;
-	// }
-
-	private File getLatestFile(File[] files) {
-		File latestFile = null;
-		long lastModified = Long.MIN_VALUE;
-		for (File file : files) {
-			if (file.lastModified() > lastModified) {
-				latestFile = file;
-				lastModified = file.lastModified();
-			}
+	private String resolveDirPath(String confDirPath) {
+		String resolvedPath = LogMonitorUtil.resolvePath(confDirPath);
+		if (!resolvedPath.endsWith(File.separator)) {
+			resolvedPath = resolvedPath + File.separator;
 		}
-		return latestFile;
+		return resolvedPath;
 	}
 
 	private long getCurrentFilePointer(String dynamicLogPath, String actualLogPath, long fileSize) {
@@ -196,13 +209,5 @@ public class LogMonitorTaskForJsonAnalyzer implements Callable<MultiLogAnalyzerR
 	private void setNewFilePointer(String dynamicLogPath, String actualLogPath, long lastReadPosition) {
 		filePointerProcessor.updateFilePointer(dynamicLogPath, actualLogPath, lastReadPosition);
 	}
-
-	// private String getLogNamePrefix() {
-	// String displayName =
-	// StringUtils.isBlank(logJsonAnalyzer.getDisplayName()) ?
-	// logJsonAnalyzer.getLogName()
-	// : logJsonAnalyzer.getDisplayName();
-	// return displayName + METRIC_PATH_SEPARATOR;
-	// }
 
 }

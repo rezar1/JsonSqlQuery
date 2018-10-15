@@ -1,6 +1,5 @@
 package com.extensions.logmonitor.main;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.beust.jcommander.Parameter;
@@ -26,10 +25,10 @@ public class JSqlComandLineOptions {
 	private boolean help;
 	@Parameter(names = { "-dir", "-d" }, description = "日志文件所在的目录,默认为当前目录下", required = false)
 	private String dir;
-	@Parameter(names = { "-p" }, description = "检索日志文件名称的正则表达式,e.g. *testFile.log", required = false)
+	@Parameter(names = { "-p" }, description = "检索日志文件名称的正则表达式,e.g. *testFile.log", required = true)
 	private String filePattern;
 	@Parameter(names = { "-jsql" }, description = "日志检索的json(jsql语句请用双引号括起来),支持多个-jsql属性", required = true)
-	private List<String> jsonSql = new ArrayList<>();
+	private List<String> jsonSql;
 	@Parameter(names = { "-f" }, description = "结果输出到文件,输入文件路径", required = false)
 	private String fileOutput;
 	@Parameter(names = { "-sys" }, description = "结果控制台打印?", required = false)
