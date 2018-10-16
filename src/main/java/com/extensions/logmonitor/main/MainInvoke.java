@@ -8,7 +8,10 @@ import com.extensions.logmonitor.MultiLogAnalyzerResult;
 import com.extensions.logmonitor.config.LogJsonAnalyzer;
 import com.extensions.logmonitor.config.SearchInfo;
 import com.extensions.logmonitor.logFileAnalyzer.LogMonitorToJsonAnalyWithWildFiles;
+import com.extensions.logmonitor.main.output.ResultPrint;
+import com.extensions.logmonitor.main.output.TextResultPrint;
 import com.extensions.logmonitor.processors.FilePointerProcessor;
+import com.extensions.logmonitor.util.GenericsUtils;
 import com.extensions.logmonitor.util.JacksonUtil;
 
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +37,11 @@ public class MainInvoke {
 			jCommander.usage();
 			return;
 		}
+		String resultOutput = options.getFileOutput();
+		if (GenericsUtils.notNullAndEmpty(resultOutput)) {
+
+		}
+
 		log.info("JSqlComandLineOptions are:{}", JacksonUtil.obj2Str(options));
 		String logDirectory = changeFileString(options.getDir());
 		String dynLogName = options.getFilePattern();
@@ -47,8 +55,15 @@ public class MainInvoke {
 		}
 		LogMonitorToJsonAnalyWithWildFiles analyzer = new LogMonitorToJsonAnalyWithWildFiles(filePointerProcessor,
 				logJsonAnalyzer);
-		MultiLogAnalyzerResult call = analyzer.call();
-		
+		TextResultPrint print = new TextResultPrint();
+		print.setAppend(options.isAppend());
+		print.setJsonLine(options.isJsonOutput());
+		print.setJsonOutputEventType(options.getLogEvent());
+		print.setOriginLineFormat(options.getFormatStr());
+		print.setOutputToFilePath(options.getFileOutput());
+		print.setSysOutput(options.isSysOutput());
+		analyzer.call(print);
+
 		// FileUtils.deleteDirectory(CommonConfig.tempFilePath);
 	}
 

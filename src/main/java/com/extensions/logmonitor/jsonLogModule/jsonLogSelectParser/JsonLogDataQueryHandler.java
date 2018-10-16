@@ -11,13 +11,12 @@ import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.tree.ParseTree;
 
-import com.extensions.logmonitor.config.CommonConfig;
 import com.extensions.logmonitor.jsonContentParseies.jsonAntlr4Parser.JsonContentVisitor2;
 import com.extensions.logmonitor.jsonContentParseies.jsonAntlr4Parser.jsonLexer;
 import com.extensions.logmonitor.jsonContentParseies.jsonAntlr4Parser.jsonParser;
 import com.extensions.logmonitor.jsonLogModule.logFileAnalyzer.dataCache.selectDataCache.QueryResultDataItem;
 import com.extensions.logmonitor.jsonLogModule.queryExecute.QueryExecutor;
-import com.extensions.logmonitor.util.BatchTimeWatcher;
+import com.extensions.logmonitor.main.output.ResultPrint;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,17 +34,6 @@ public class JsonLogDataQueryHandler {
 	private List<QueryExecutor> queryExecutors;
 	private JsonContentVisitor2 visitor;
 	private MultiJsonLogDataQueryHandler handler;
-	// public static BatchTimeWatcher watcher = new
-	// BatchTimeWatcher(CommonConfig.watchBatchSize,
-	// new BatchTimeWatcher.BatchWatchOutput() {
-	// @Override
-	// public void output(int batchIndex, int batchCount, int batchUseTime, long
-	// preTime, long currentTime) {
-	// System.out.println("doInWalkers\t" + batchIndex + "\thandle " +
-	// batchCount + " visit use all time:"
-	// + batchUseTime + "\t" + (batchCount / (batchUseTime)) + " visit/ms");
-	// }
-	// });
 
 	public JsonLogDataQueryHandler(List<QueryExecutor> queryExecutors) {
 		this.queryExecutors = queryExecutors;
@@ -71,6 +59,17 @@ public class JsonLogDataQueryHandler {
 			bais.reset();
 		} catch (IOException e) {
 			log.info("can not parse str:{}", lineLog);
+		}
+	}
+
+	public void doAnalyzerResult(ResultPrint print) {
+		this.handler.over();
+		for (QueryExecutor qe : this.queryExecutors) {
+			log.info("for logEventType:" + qe.getFromTableLogName() + " handle results are:");
+			List<QueryResultDataItem> doHandle = qe.doHandle();
+			for (QueryResultDataItem qrdi : doHandle) {
+				print.resultPrint(qrdi);
+			}
 		}
 	}
 

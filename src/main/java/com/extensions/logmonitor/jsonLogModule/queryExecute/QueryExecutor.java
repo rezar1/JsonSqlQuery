@@ -2,7 +2,6 @@ package com.extensions.logmonitor.jsonLogModule.queryExecute;
 
 import java.util.List;
 
-import com.extensions.logmonitor.config.ResultPrint;
 import com.extensions.logmonitor.jsonLogModule.logFileAnalyzer.dataCache.selectDataCache.FileOutterQueryResultDataCache;
 import com.extensions.logmonitor.jsonLogModule.logFileAnalyzer.dataCache.selectDataCache.QueryResultDataCache;
 import com.extensions.logmonitor.jsonLogModule.logFileAnalyzer.dataCache.selectDataCache.QueryResultDataItem;
@@ -35,7 +34,6 @@ public class QueryExecutor {
 	private QueryResultDataCache dataCache = new FileOutterQueryResultDataCache();
 	private int querySize;
 	
-	private ResultPrint resultPrint;
 
 	public QueryResultDataItem createQueryResultDataItem() {
 		QueryResultDataItem setFileName = new QueryResultDataItem(querySize);

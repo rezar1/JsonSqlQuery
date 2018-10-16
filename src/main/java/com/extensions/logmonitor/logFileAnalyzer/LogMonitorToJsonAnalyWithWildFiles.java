@@ -11,10 +11,10 @@ import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang.time.StopWatch;
 
 import com.extensions.kienerj.OptimizedRandomAccessFile;
-import com.extensions.logmonitor.MultiLogAnalyzerResult;
 import com.extensions.logmonitor.config.CommonConfig;
 import com.extensions.logmonitor.config.LogJsonAnalyzer;
 import com.extensions.logmonitor.jsonLogModule.jsonLogSelectParser.JsonLogDataQueryHandler;
+import com.extensions.logmonitor.main.output.ResultPrint;
 import com.extensions.logmonitor.processors.FilePointer;
 import com.extensions.logmonitor.processors.FilePointerProcessor;
 import com.extensions.logmonitor.util.BatchTimeWatcher;
@@ -45,7 +45,7 @@ public class LogMonitorToJsonAnalyWithWildFiles {
 		this.logJsonAnalyzer = logJsonAnalyzer;
 	}
 
-	public MultiLogAnalyzerResult call() throws Exception {
+	public void call(ResultPrint resultPrint) throws Exception {
 		String dirPath = resolveDirPath(logJsonAnalyzer.getLogDirectory());
 		log.info("Log monitor task started...");
 		OptimizedRandomAccessFile randomAccessFile = null;
@@ -53,7 +53,7 @@ public class LogMonitorToJsonAnalyWithWildFiles {
 		List<File> files = getLogFile(dirPath);
 		if (GenericsUtils.isNullOrEmpty(files)) {
 			log.info("empty files for dir:{} with jsonLogName:{}", dirPath, logJsonAnalyzer.getLogName());
-			return null;
+			return;
 		}
 		for (File file : files) {
 			try {
@@ -77,15 +77,18 @@ public class LogMonitorToJsonAnalyWithWildFiles {
 				LogMonitorUtil.closeRandomAccessFile(randomAccessFile);
 			}
 		}
-		MultiLogAnalyzerResult result = new MultiLogAnalyzerResult();
-		analyzerQuery(result);
-		return result;
+		try {
+			resultPrint.before();
+			analyzerQuery();
+		} catch (Exception e) {
+		} finally {
+			resultPrint.end();
+		}
 	}
 
 	/**
 	 * 
 	 */
-	@SuppressWarnings("unused")
 	private void analyzerQuery() {
 		Set<String> allHandleLogEventTypes = this.logJsonAnalyzer.getAllHandleLogEventTypes();
 		for (String logEventType : allHandleLogEventTypes) {
@@ -99,12 +102,12 @@ public class LogMonitorToJsonAnalyWithWildFiles {
 	 * @param logMetrics
 	 * 
 	 */
-	public void analyzerQuery(MultiLogAnalyzerResult logMetrics) {
+	public void analyzerQuery(ResultPrint resultPrint) {
 		Set<String> allHandleLogEventTypes = this.logJsonAnalyzer.getAllHandleLogEventTypes();
 		for (String logEventType : allHandleLogEventTypes) {
 			JsonLogDataQueryHandler findJsonLogDataQueryHandler = this.logJsonAnalyzer
 					.findJsonLogDataQueryHandler(logEventType);
-			logMetrics.addResult(findJsonLogDataQueryHandler.doAnalyzerResult());
+			findJsonLogDataQueryHandler.doAnalyzerResult(resultPrint);
 		}
 	}
 

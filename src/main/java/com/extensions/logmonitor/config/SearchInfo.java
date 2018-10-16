@@ -22,14 +22,11 @@ public class SearchInfo {
 	private String selectQuery;
 	private boolean caseSensitive;
 	private QueryExecutor queryExecutor;
-	private ResultPrint DEFAULT_RESULT_PRINTER = new SystemResultPrinter();
-	private ResultPrint resultPrint = DEFAULT_RESULT_PRINTER;
 
 	public SearchInfo(String selectQuerySql) {
 		this.selectQuery = selectQuerySql;
 		this.queryExecutor = JsonLogQuerySqlParser.createQueryExecutor(selectQuery);
 		this.logType = this.queryExecutor.getFromTableLogName();
-		this.queryExecutor.setResultPrint(resultPrint);
 		log.info("SearchInfo is:{}", this);
 	}
 

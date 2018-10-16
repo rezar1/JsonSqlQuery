@@ -1,4 +1,4 @@
-package com.extensions.logmonitor.config;
+package com.extensions.logmonitor.main.output;
 
 import com.extensions.logmonitor.jsonLogModule.logFileAnalyzer.dataCache.selectDataCache.QueryResultDataItem;
 
@@ -12,6 +12,10 @@ import com.extensions.logmonitor.jsonLogModule.logFileAnalyzer.dataCache.selectD
  */
 public interface ResultPrint {
 
-	public void reusltPrint(QueryResultDataItem resultItem);
+	public void before();
+
+	public void resultPrint(QueryResultDataItem resultItem);
+
+	public void end();
 
 }

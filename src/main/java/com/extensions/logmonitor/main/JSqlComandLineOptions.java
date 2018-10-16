@@ -33,6 +33,8 @@ public class JSqlComandLineOptions {
 	private String fileOutput;
 	@Parameter(names = { "-sys" }, description = "结果控制台打印?", required = false)
 	private boolean sysOutput = true;
+	@Parameter(names = { "-a" }, description = "结果文件打印是否追加?", required = false)
+	private boolean append = false;
 	@Parameter(names = { "-j" }, description = "json格式打印?", required = false)
 	private boolean jsonOutput;
 	@Parameter(names = { "-l" }, description = "json格式打印的时候补加logEventType", required = false)
