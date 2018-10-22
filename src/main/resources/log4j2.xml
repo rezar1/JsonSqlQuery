@@ -9,5 +9,10 @@
 		<root level="info">
 			<appender-ref ref="stout" />
 		</root>
+
+		<logger name="com.extensions.logmonitor.jsonLogModule.logFileAnalyzer"
+			level="INFO">
+			<appender-ref ref="stout" />
+		</logger>
 	</Loggers>
 </configuration>

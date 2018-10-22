@@ -33,11 +33,18 @@ public class QueryExecutor {
 	private Long[] limitInfos;
 	private QueryResultDataCache dataCache = new FileOutterQueryResultDataCache();
 	private int querySize;
-	
 
 	public QueryResultDataItem createQueryResultDataItem() {
 		QueryResultDataItem setFileName = new QueryResultDataItem(querySize);
 		return setFileName;
+	}
+
+	public boolean isSelectOnlyFunCall() {
+		boolean ret = this.selectPart.isJustFunCallSelect() && this.groupExecutor == null;
+		if (ret && this.groupExecutor == null) {
+			this.groupExecutor = new GroupExecutor();
+		}
+		return ret;
 	}
 
 	public void setSelectPart(SelectPart selectPart) {
@@ -96,7 +103,5 @@ public class QueryExecutor {
 	public void initGroupByExecutor() {
 		this.groupExecutor = new GroupExecutor();
 	}
-	
-	
 
 }

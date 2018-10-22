@@ -24,7 +24,7 @@ public class LineFormatParser {
 
 	public LineFormatParser(String formatStr) {
 		this.originForamt = formatStr;
-		String pattern = "\\$\\{(.*?)\\}";
+		String pattern = "\\{(.*?)\\}";
 		Pattern compile = Pattern.compile(pattern);
 		Matcher matcher = compile.matcher(formatStr);
 		this.keys = new ArrayList<>();
@@ -32,7 +32,7 @@ public class LineFormatParser {
 			String group = matcher.group(1);
 			keys.add(group);
 		}
-		this.formatAfterHandle = formatStr.replaceAll("\\$\\{(.*?)\\}", "%s");
+		this.formatAfterHandle = formatStr.replaceAll("\\{(.*?)\\}", "%s");
 	}
 
 	public String formatLineStr(Map<String, Object> lineData) {

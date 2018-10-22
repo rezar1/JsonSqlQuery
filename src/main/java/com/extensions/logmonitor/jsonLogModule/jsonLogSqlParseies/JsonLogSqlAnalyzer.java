@@ -423,7 +423,7 @@ public class JsonLogSqlAnalyzer extends jsonLogSqlBaseListener {
 					qe.setQueryPath("*");
 				}
 				qe.setAlias(getAlias(ctx.alias()));
-				log.info("QueryExecute is:{} {}", qe, qe.getQueryPathWithFieldName());
+				log.debug("QueryExecute is:{} {}", qe, qe.getQueryPathWithFieldName());
 				selectPart.addFunQueryExecute(qe);
 			} else if (functionList != null) {
 				qe = new ColumnValueQueryExecute();
@@ -443,7 +443,7 @@ public class JsonLogSqlAnalyzer extends jsonLogSqlBaseListener {
 
 	@Override
 	public void enterTable_references(Table_referencesContext ctx) {
-		log.info("enterTable_references:{}", ctx.getText());
+		log.debug("enterTable_references:{}", ctx.getText());
 		FromScope fromScope = new FromScope(this.currentScope);
 		this.currentScope = fromScope;
 		queryExecutor.setFromTableLogName(ctx.getText());
@@ -684,7 +684,7 @@ public class JsonLogSqlAnalyzer extends jsonLogSqlBaseListener {
 				} else {
 					qe.setQueryPath("*");
 				}
-				// log.info("Group QueryExecute is:{} {}", qe,
+				// log.debug("Group QueryExecute is:{} {}", qe,
 				// qe.getQueryPathWithFieldName());
 				this.queryExecutor.getGroupExecutor().addGroupFunQuery(optExecute, qe);
 				return OptExecute.FUN_CALL_PREFIX + qe.getQueryPathWithFieldName();

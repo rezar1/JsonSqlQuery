@@ -1,6 +1,7 @@
 package com.extensions.logmonitor.main.output;
 
 import com.extensions.logmonitor.jsonLogModule.logFileAnalyzer.dataCache.selectDataCache.QueryResultDataItem;
+import com.extensions.logmonitor.main.JSqlComandLineOptions;
 
 /**
  * 
@@ -12,7 +13,7 @@ import com.extensions.logmonitor.jsonLogModule.logFileAnalyzer.dataCache.selectD
  */
 public interface ResultPrint {
 
-	public void before();
+	public void before(JSqlComandLineOptions options);
 
 	public void resultPrint(QueryResultDataItem resultItem);
 

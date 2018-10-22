@@ -28,6 +28,7 @@ public class SelectPart {
 
 	private boolean distinct;
 	private int querySize;
+	private boolean justFunCallSelect = true;
 
 	private List<QueryExecute<? extends Object>> allQueryExecute = new ArrayList<>();
 	private Map<String, List<QueryExecute<? extends Object>>> queryExecuteCache = new LinkedHashMap<>();
@@ -37,6 +38,9 @@ public class SelectPart {
 
 	public void fillAllFunQuery(List<QueryResultDataItem> cacheRecord) {
 		for (QueryResultDataItem qrdi : cacheRecord) {
+			if (qrdi == null) {
+				continue;
+			}
 			Long groupId = qrdi.getGroupId();
 			for (List<QueryExecute<? extends Object>> allFunQuery : multiFunQueryExecute.values()) {
 				for (QueryExecute<? extends Object> funQuery : allFunQuery) {
@@ -73,6 +77,7 @@ public class SelectPart {
 
 	public SelectPart addQueryExecute(QueryExecute<? extends Object> queryExecute) {
 		querySize++;
+		justFunCallSelect = false;
 		log.info("queryExecute is:{} and superPath:{} and fullPath:{}", queryExecute, queryExecute.getQuerySuperPath(),
 				queryExecute.getQueryPathWithFieldName());
 		GenericsUtils.addListIfNotExistsAndRet(this.queryExecuteCache, queryExecute.getQueryPathWithFieldName(),

@@ -20,6 +20,8 @@ import com.extensions.logmonitor.jsonLogModule.logFileAnalyzer.order.OrderType;
 import com.extensions.logmonitor.jsonLogModule.logFileAnalyzer.order.OrderTypeComparator;
 import com.extensions.logmonitor.util.GenericsUtils;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * 
  * @say little Boy, don't be sad.
@@ -28,6 +30,7 @@ import com.extensions.logmonitor.util.GenericsUtils;
  * @Desc this guy is to lazy , noting left.
  *
  */
+@Slf4j
 public class ObjBinaryCacheWithBlockSize<T extends DataSizeCountable> {
 
 	private int defaultBlockSize = 20;
@@ -141,7 +144,7 @@ public class ObjBinaryCacheWithBlockSize<T extends DataSizeCountable> {
 
 	@SuppressWarnings("unchecked")
 	public List<T> doSort(Integer offset, Integer size) {
-		System.out.print("doSort------");
+		log.debug("doSort------");
 		stopwatch.split();
 		IdMarkHeapItem<Integer, T>[] datas = GenericsUtils.createArray(IdMarkHeapItem.class, this.blocks.size());
 		int readSize = this.countIndex;

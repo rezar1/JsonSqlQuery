@@ -71,7 +71,7 @@ public class QueryExecutorJsonWalker {
 			Arrays.fill(this.queryExecuteLazy, null);
 			this.groupQueryCache.clear();
 		}
-		if (this.queryExecutor.getGroupExecutor() != null) {
+		if (this.queryExecutor.getGroupExecutor() != null || this.queryExecutor.isSelectOnlyFunCall()) {
 			isGroup = true;
 		}
 		if (this.queryExecutor.getOrderExecutor() != null) {

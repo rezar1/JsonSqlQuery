@@ -13,6 +13,7 @@ import com.extensions.logmonitor.util.GenericsUtils;
 import com.extensions.logmonitor.util.LoadCache.InitValue;
 
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 
@@ -24,6 +25,7 @@ import lombok.Data;
  *
  */
 @Data
+@Slf4j
 public class LogJsonAnalyzer {
 
 	private String displayName;
@@ -83,7 +85,7 @@ public class LogJsonAnalyzer {
 
 	public LogJsonAnalyzer addSearchInfo(SearchInfo searchInfo) {
 		List<SearchInfo> cache = searchInfoMaps.get(searchInfo.getLogType());
-		System.out.println("cache is:" + cache + "\tsearchInfo:" + searchInfo);
+		log.debug("cache is:" + cache + "\tsearchInfo:" + searchInfo);
 		if (cache == null) {
 			cache = new ArrayList<>();
 			this.searchInfoMaps.put(searchInfo.getLogType(), cache);

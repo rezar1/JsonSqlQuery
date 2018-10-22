@@ -210,7 +210,7 @@ public class FileOutterQueryResultDataCache implements QueryResultDataCache {
 	@Override
 	public void setDistinct(boolean distinct) {
 		this.distinct = distinct;
-		System.out.println("set distinct:" + this.distinct);
+		// System.out.println("set distinct:" + this.distinct);
 		if (this.distinct) {
 			this.distinctFilter = new BloomFilter();
 		} else {

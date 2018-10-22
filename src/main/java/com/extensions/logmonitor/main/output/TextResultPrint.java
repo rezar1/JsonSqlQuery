@@ -11,6 +11,7 @@ import java.util.UUID;
 
 import com.extensions.logmonitor.config.CommonConfig;
 import com.extensions.logmonitor.jsonLogModule.logFileAnalyzer.dataCache.selectDataCache.QueryResultDataItem;
+import com.extensions.logmonitor.main.JSqlComandLineOptions;
 import com.extensions.logmonitor.util.GenericsUtils;
 import com.extensions.logmonitor.util.JacksonUtil;
 
@@ -39,15 +40,18 @@ public class TextResultPrint implements ResultPrint {
 
 	private PrintWriter pw;
 
-	public void setOriginLineFormat(String originLineFormat) {
-		this.originLineFormat = originLineFormat;
+	@Override
+	public void before(JSqlComandLineOptions options) {
+		this.setAppend(Boolean.parseBoolean(options.getAppend()));
+		this.setJsonLine(Boolean.parseBoolean(options.getJsonOutput()));
+		this.setJsonOutputEventType(options.getLogEvent());
+		this.setOriginLineFormat(options.getFormatStr());
+		this.setOutputToFilePath(options.getFileOutput());
+		this.setSysOutput(Boolean.parseBoolean(options.getSysOutput()));
+		this.originLineFormat = options.getFormatStr();
 		if (GenericsUtils.notNullAndEmpty(this.originLineFormat)) {
 			this.lineFormatParser = new LineFormatParser(this.originLineFormat);
 		}
-	}
-
-	@Override
-	public void before() {
 		OutputStream os = null;
 		if (GenericsUtils.notNullAndEmpty(this.outputToFilePath)) {
 			os = initOutputFile(this.outputToFilePath);

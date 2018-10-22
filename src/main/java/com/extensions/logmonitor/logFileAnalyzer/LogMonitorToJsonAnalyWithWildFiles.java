@@ -78,17 +78,16 @@ public class LogMonitorToJsonAnalyWithWildFiles {
 			}
 		}
 		try {
-			resultPrint.before();
-			analyzerQuery();
+			analyzerQuery(resultPrint);
 		} catch (Exception e) {
 		} finally {
-			resultPrint.end();
 		}
 	}
 
 	/**
 	 * 
 	 */
+	@SuppressWarnings("unused")
 	private void analyzerQuery() {
 		Set<String> allHandleLogEventTypes = this.logJsonAnalyzer.getAllHandleLogEventTypes();
 		for (String logEventType : allHandleLogEventTypes) {

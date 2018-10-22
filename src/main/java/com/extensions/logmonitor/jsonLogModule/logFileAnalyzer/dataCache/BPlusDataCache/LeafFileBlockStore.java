@@ -12,15 +12,15 @@ import java.nio.channels.FileLock;
 import java.util.Arrays;
 import java.util.Comparator;
 
-import org.apache.log4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * File based Storage of fixed size blocks This class is NOT Thread-Safe
  * 
  * @author Guillermo Grandes / guillermo.grandes[at]gmail.com
  */
+@Slf4j
 public class LeafFileBlockStore {
-	private static final Logger log = Logger.getLogger(LeafFileBlockStore.class);
 	/**
 	 * File associated to this store
 	 */
@@ -447,7 +447,7 @@ public class LeafFileBlockStore {
 			throw new InvalidStateException();
 		}
 		if (Check64bitsJVM.JVMis64bits()) {
-			log.info("Enabled mmap on 64bits JVM");
+			log.debug("Enabled mmap on 64bits JVM");
 		} else {
 			log.warn("Enabled mmap on 32bits JVM, risk of: java.lang.OutOfMemoryError: Map failed");
 		}
@@ -464,9 +464,9 @@ public class LeafFileBlockStore {
 		}
 		useMmap = Check64bitsJVM.JVMis64bits();
 		if (useMmap) {
-			log.info("Enabled mmap on 64bits JVM");
+			log.debug("Enabled mmap on 64bits JVM");
 		} else {
-			log.info("Disabled mmap on 32bits JVM");
+			log.debug("Disabled mmap on 32bits JVM");
 		}
 	}
 
@@ -480,10 +480,10 @@ public class LeafFileBlockStore {
 		}
 		if (Boolean.getBoolean(Constants.PROP_IO_LOCKING)) {
 			useLock = false;
-			log.info("Disabled Locking in System Property (" + Constants.PROP_IO_LOCKING + ")");
+			log.debug("Disabled Locking in System Property (" + Constants.PROP_IO_LOCKING + ")");
 		} else {
 			useLock = true;
-			log.info("Enabled Locking");
+			log.debug("Enabled Locking");
 		}
 	}
 
@@ -505,7 +505,7 @@ public class LeafFileBlockStore {
 				mbb = fileChannel.map(FileChannel.MapMode.READ_WRITE, mapOffset, mapSize);
 				// mbb.load();
 				mmaps.put(mapIdx, new BufferReference<MappedByteBuffer>(mapIdx, mbb));
-				// log.info("Mapped index=" + index + " to offset=" + mapOffset
+				// log.debug("Mapped index=" + index + " to offset=" + mapOffset
 				// + " size=" + mapSize);
 			} else {
 				mbb.clear();
