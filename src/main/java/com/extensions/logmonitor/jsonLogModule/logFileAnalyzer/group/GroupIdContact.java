@@ -17,7 +17,7 @@ public class GroupIdContact extends DataHolder<GroupIdContact> implements Compar
 	private long recordId;
 	private boolean needRemove;
 
-	private long groupId;
+	private String groupId;
 
 	public GroupIdContact(long recordId) {
 		this.recordId = recordId;
@@ -29,7 +29,7 @@ public class GroupIdContact extends DataHolder<GroupIdContact> implements Compar
 	/**
 	 * @return the groupId
 	 */
-	public long getGroupId() {
+	public String getGroupId() {
 		return groupId;
 	}
 
@@ -38,7 +38,7 @@ public class GroupIdContact extends DataHolder<GroupIdContact> implements Compar
 	 *            the groupId to set
 	 * @return
 	 */
-	public GroupIdContact setGroupId(long groupId) {
+	public GroupIdContact setGroupId(String groupId) {
 		this.groupId = groupId;
 		return this;
 	}

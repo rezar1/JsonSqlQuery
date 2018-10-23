@@ -11,12 +11,12 @@ package com.extensions.logmonitor.jsonLogModule.logFileAnalyzer.select;
 public class ArrayColumnValueQueryExecute extends BaseQueryExecute<Object> {
 
 	@Override
-	public void execute(Object value, Long groupId) {
+	public void execute(Object value, String groupId) {
 
 	}
 
 	@Override
-	public Object end(Long groupId) {
+	public Object end(String groupId) {
 		return null;
 	}
 

@@ -18,16 +18,16 @@ import com.extensions.logmonitor.util.LoadCache;
  */
 public class MinFunQueryExecute extends BaseQueryExecute<Object> {
 
-	private LoadCache<Long, GroupFunData<Object, Integer>> loadCache2 = new LoadCache<Long, GroupFunData<Object, Integer>>(
-			new LoadCache.InitValue<Long, GroupFunData<Object, Integer>>() {
+	private LoadCache<String, GroupFunData<Object, Integer>> loadCache2 = new LoadCache<String, GroupFunData<Object, Integer>>(
+			new LoadCache.InitValue<String, GroupFunData<Object, Integer>>() {
 				@Override
-				public GroupFunData<Object, Integer> initValue(Long key) {
+				public GroupFunData<Object, Integer> initValue(String key) {
 					return new GroupFunData<Object, Integer>(null, 0);
 				}
 			});
 
 	@Override
-	public void execute(final Object value, Long groupId) {
+	public void execute(final Object value, String groupId) {
 		final GroupFunData<Object, Integer> cache = loadCache2.getCache(check(groupId));
 		cache.safeSetDatas(new DoInLockCallback<Object, Integer>() {
 			@Override
@@ -50,7 +50,7 @@ public class MinFunQueryExecute extends BaseQueryExecute<Object> {
 	}
 
 	@Override
-	public Object end(Long groupId) {
+	public Object end(String groupId) {
 		return loadCache2.getCache(groupId).safeReadDatas().first.toString();
 	}
 

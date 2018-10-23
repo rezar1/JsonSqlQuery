@@ -1,8 +1,6 @@
 package com.extensions.logmonitor.jsonLogModule.logFileAnalyzer.group;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.extensions.logmonitor.util.GenericsUtils;
 import com.extensions.logmonitor.util.StrUtils;
 
 /**
@@ -15,11 +13,13 @@ import com.extensions.logmonitor.util.StrUtils;
  */
 public class GroupByKey {
 
-	private List<Object> values = new ArrayList<>();
+	// private List<Object> values = new ArrayList<>();
+	@SuppressWarnings("unused")
 	private String hashValue = "";
+	private StringBuilder hashValueBuilder = new StringBuilder();
 
-	public GroupByKey addGroupByFieldValue(Object value) {
-		values.add(value);
+	public GroupByKey addGroupByFieldValue2(Object value) {
+		// values.add(value);
 		String hexValue = null;
 		if (value instanceof Integer) {
 			hexValue = Integer.toHexString((int) value);
@@ -36,12 +36,17 @@ public class GroupByKey {
 		return this;
 	}
 
-	public Long getHashValue() {
-		return (long) this.hashValue.hashCode();
+	public GroupByKey addGroupByFieldValue(Object value) {
+		this.hashValueBuilder.append(value == null ? "" : value.toString()).append("_");
+		return this;
 	}
 
-	public List<Object> getValues() {
-		return this.values;
+	public Long getHashValue() {
+		return (long) GenericsUtils.deleteLastChar(hashValueBuilder).hashCode();
 	}
+
+	// public List<Object> getValues() {
+	// return this.values;
+	// }
 
 }

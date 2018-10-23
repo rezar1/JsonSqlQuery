@@ -41,7 +41,7 @@ public class SelectPart {
 			if (qrdi == null) {
 				continue;
 			}
-			Long groupId = qrdi.getGroupId();
+			String groupId = qrdi.getGroupId();
 			for (List<QueryExecute<? extends Object>> allFunQuery : multiFunQueryExecute.values()) {
 				for (QueryExecute<? extends Object> funQuery : allFunQuery) {
 					Object endValue = null;

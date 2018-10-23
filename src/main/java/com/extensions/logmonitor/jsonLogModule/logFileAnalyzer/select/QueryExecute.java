@@ -12,9 +12,9 @@ import com.extensions.logmonitor.jsonLogModule.logFileAnalyzer.functions.valueCo
  */
 public interface QueryExecute<T> {
 
-	public void execute(Object value, Long groupId);
+	public void execute(Object value, String groupId);
 
-	public T end(Long groupId);
+	public T end(String groupId);
 
 	public void setAlias(String alias);
 
@@ -32,6 +32,6 @@ public interface QueryExecute<T> {
 
 	public void clearResource();
 
-	public void clearResource(Long groupId);
+	public void clearResource(String groupId);
 
 }

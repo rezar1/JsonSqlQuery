@@ -17,16 +17,16 @@ public class CountFunQueryExectue extends BaseQueryExecute<Integer> {
 
 	private boolean distinct;
 	private BloomFilter bloomFilter = new BloomFilter();
-	private LoadCache<Long, AtomicInteger> loadCache = new LoadCache<Long, AtomicInteger>(
-			new LoadCache.InitValue<Long, AtomicInteger>() {
+	private LoadCache<String, AtomicInteger> loadCache = new LoadCache<String, AtomicInteger>(
+			new LoadCache.InitValue<String, AtomicInteger>() {
 				@Override
-				public AtomicInteger initValue(Long key) {
+				public AtomicInteger initValue(String key) {
 					return new AtomicInteger(0);
 				}
 			});
 
 	@Override
-	public void execute(Object value, Long groupId) {
+	public void execute(Object value, String groupId) {
 		if (distinct) {
 			synchronized (groupId == null ? CountFunQueryExectue.class : groupId) {
 				if (bloomFilter.contains(value.toString())) {
@@ -38,7 +38,7 @@ public class CountFunQueryExectue extends BaseQueryExecute<Integer> {
 	}
 
 	@Override
-	public Integer end(Long groupId) {
+	public Integer end(String groupId) {
 		return loadCache.getCache(check(groupId)).get();
 	}
 

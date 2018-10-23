@@ -87,27 +87,30 @@ public class GroupExecutor {
 		return optSuccess;
 	}
 
-	public TwoTuple<Boolean, Long> putQueryResultDataItem(QueryResultDataItem queryResultDataItem) {
+	public TwoTuple<Boolean, String> putQueryResultDataItem(QueryResultDataItem queryResultDataItem) {
 		Map<String, Object> queryResult = queryResultDataItem.getQueryResult();
-		GroupByKey gb = new GroupByKey();
+		// GroupByKey gb = new GroupByKey();
+		StringBuilder simpleMark = new StringBuilder();
 		// group by 里面的字段一定需要包含在select 列表里面
 		for (GroupByItem groupByItem : this.groupByPaths) {
 			Object object = queryResult.get(groupByItem.getGroupByPath());
 			if (groupByItem.getValueConvert() != null) {
 				object = groupByItem.getValueConvert().convert(object);
 			}
-			gb.addGroupByFieldValue(object);
+			// gb.addGroupByFieldValue(object);
+			simpleMark.append(object == null ? "" : object.toString()).append("_");
 		}
-		Long groupId = gb.getHashValue();
+		String groupIdStr = GenericsUtils.string2MD5(GenericsUtils.deleteLastCharToString(simpleMark));
+		// Long groupId = gb.getHashValue();
 		GroupIdContact groupIdContact = null;
 		boolean isHasExists = false;
-		groupIdContact = this.groupFilter.findGroupIdContact(groupId);
+		groupIdContact = this.groupFilter.findGroupIdContact(groupIdStr);
 		isHasExists = groupIdContact != null;
 		if (!isHasExists) {
 			groupIdContact = new GroupIdContact(queryResultDataItem.getRecordId());
-			this.groupFilter.initGroupId(groupId, groupIdContact);
+			this.groupFilter.initGroupId(groupIdStr, groupIdContact);
 		}
-		return TupleUtil.tuple(isHasExists, gb.getHashValue());
+		return TupleUtil.tuple(isHasExists, groupIdStr);
 	}
 
 	public void doWhereConditionQuery(QueryResultDataItem queryReusltDataItem, List<ExecuteLazy> executeLazys) {

@@ -52,8 +52,8 @@ public abstract class BaseQueryExecute<T> implements QueryExecute<T> {
 	 * @param groupId
 	 * @return
 	 */
-	protected Long check(Long groupId) {
-		return groupId == null ? Long.MIN_VALUE : groupId.longValue();
+	protected String check(String groupId) {
+		return groupId == null ? "" : groupId;
 	}
 
 	@Override
@@ -85,17 +85,17 @@ public abstract class BaseQueryExecute<T> implements QueryExecute<T> {
 		return (GenericsUtils.notNullAndEmpty(this.querySuperPath) ? this.querySuperPath + "." : "") + this.fieldName;
 	}
 
-	protected BaseQueryExecute<T> putResource(String resourceKey, Object value, Long groupId) {
+	protected BaseQueryExecute<T> putResource(String resourceKey, Object value, String groupId) {
 		getResourceMap(groupId).put(resourceKey, value);
 		return this;
 	}
 
-	private Map<String, Object> getResourceMap(Long groupId) {
+	private Map<String, Object> getResourceMap(String groupId) {
 		Map<String, Map<String, Object>> resourceMap = this.threadResource.get();
-		Map<String, Object> map = resourceMap.get(getGroupIdStr(groupId));
+		Map<String, Object> map = resourceMap.get(check(groupId));
 		if (map == null) {
 			map = new HashMap<>();
-			resourceMap.put(getGroupIdStr(groupId), map);
+			resourceMap.put(check(groupId), map);
 		}
 		return map;
 	}
@@ -113,7 +113,7 @@ public abstract class BaseQueryExecute<T> implements QueryExecute<T> {
 	}
 
 	@SuppressWarnings("unchecked")
-	protected <D> D takeResource(String resourceKey, D defaultValue, Long groupId) {
+	protected <D> D takeResource(String resourceKey, D defaultValue, String groupId) {
 		Object object = getResourceMap(groupId).get(resourceKey);
 		if (object == null && defaultValue != null) {
 			this.putResource(resourceKey, defaultValue, groupId);
@@ -129,8 +129,8 @@ public abstract class BaseQueryExecute<T> implements QueryExecute<T> {
 		this.threadResource.remove();
 	}
 
-	public void clearResource(Long groupId) {
-		this.threadResource.get().remove(this.getGroupIdStr(groupId));
+	public void clearResource(String groupId) {
+		this.threadResource.get().remove(check(groupId));
 	}
 
 }

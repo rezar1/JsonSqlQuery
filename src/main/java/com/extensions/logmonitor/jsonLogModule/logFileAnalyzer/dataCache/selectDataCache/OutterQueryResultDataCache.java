@@ -1,5 +1,6 @@
 package com.extensions.logmonitor.jsonLogModule.logFileAnalyzer.dataCache.selectDataCache;
 
+import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -99,10 +100,12 @@ public class OutterQueryResultDataCache implements QueryResultDataCache {
 						((SeriAndDeser) value).serialize(value, buff);
 					}
 				}
+
 				if (obj.getGroupId() != null) {
-					buff.putLong(obj.getGroupId());
+					buff.putInt(obj.getGroupId().getBytes().length);
+					buff.put(obj.getGroupId().getBytes());
 				} else {
-					buff.putLong(-1l);
+					buff.putInt(-1);
 				}
 			}
 
@@ -137,9 +140,16 @@ public class OutterQueryResultDataCache implements QueryResultDataCache {
 					}
 					qrdi.putQueyrResult(key, value);
 				}
-				Long groupId = buf.getLong();
-				if (groupId == -1) {
-					groupId = null;
+				String groupId = null;
+				int groupIdSize = buf.getInt();
+				if (groupIdSize != -1) {
+					byte[] dst = new byte[groupIdSize];
+					buf.get(dst);
+					try {
+						groupId = new String(dst, "utf-8");
+					} catch (UnsupportedEncodingException e) {
+						e.printStackTrace();
+					}
 				}
 				qrdi.setGroupId(groupId);
 				return qrdi;

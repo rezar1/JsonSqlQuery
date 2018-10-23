@@ -19,16 +19,16 @@ import com.extensions.logmonitor.util.LoadCache;
  */
 public class AvgFunQueryExecute extends BaseQueryExecute<Object> {
 
-	private LoadCache<Long, GroupFunData<BigDecimal, Integer>> loadCache = new LoadCache<Long, GroupFunData<BigDecimal, Integer>>(
-			new LoadCache.InitValue<Long, GroupFunData<BigDecimal, Integer>>() {
+	private LoadCache<String, GroupFunData<BigDecimal, Integer>> loadCache = new LoadCache<String, GroupFunData<BigDecimal, Integer>>(
+			new LoadCache.InitValue<String, GroupFunData<BigDecimal, Integer>>() {
 				@Override
-				public GroupFunData<BigDecimal, Integer> initValue(Long key) {
+				public GroupFunData<BigDecimal, Integer> initValue(String key) {
 					return new GroupFunData<BigDecimal, Integer>(new BigDecimal("0.0"), 0);
 				}
 			});
 
 	@Override
-	public void execute(final Object value, Long groupId) {
+	public void execute(final Object value, String groupId) {
 		if (StringUtils.isNumeric(value.toString())) {
 			final GroupFunData<BigDecimal, Integer> avgDatas = this.loadCache.getCache(check(groupId));
 			avgDatas.safeSetDatas(new DoInLockCallback<BigDecimal, Integer>() {
@@ -43,7 +43,7 @@ public class AvgFunQueryExecute extends BaseQueryExecute<Object> {
 	}
 
 	@Override
-	public Object end(Long groupId) {
+	public Object end(String groupId) {
 		TwoTuple<BigDecimal, Integer> safeReadDatas = this.loadCache.getCache(check(groupId)).safeReadDatas();
 		return safeReadDatas.first.divide(new BigDecimal(safeReadDatas.second), 2);
 	}

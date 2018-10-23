@@ -24,7 +24,7 @@ public class ColumnValueQueryExecute2 extends BaseQueryExecute<Object> {
 	}
 
 	@Override
-	public void execute(Object value, Long groupId) {
+	public void execute(Object value, String groupId) {
 		if (value != null) {
 			value = super.convertValue(value);
 		}
@@ -45,7 +45,7 @@ public class ColumnValueQueryExecute2 extends BaseQueryExecute<Object> {
 	}
 
 	@Override
-	public Object end(Long groupId) {
+	public Object end(String groupId) {
 		if (this.inArrayQuery) {
 			return this.allQueryResult;
 		} else {

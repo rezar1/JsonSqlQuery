@@ -120,7 +120,7 @@ public class QueryExecutorJsonWalker {
 				boolean isExistsInGroup = false;
 				// 如果是group操作,获取分组,并判断是否需要将当前取值添加到集合中去
 				if (this.isGroup) {
-					TwoTuple<Boolean, Long> putQueryResultDataItem = this.queryExecutor.getGroupExecutor()
+					TwoTuple<Boolean, String> putQueryResultDataItem = this.queryExecutor.getGroupExecutor()
 							.putQueryResultDataItem(queryReusltDataItem);
 					isExistsInGroup = putQueryResultDataItem.first;
 					this.queryReusltDataItem.setGroupId(putQueryResultDataItem.second);

@@ -26,7 +26,7 @@ public class QueryResultDataItem implements DataSizeCountable {
 	private long recordId;
 	private long offset;
 	private LinkedHashMap<String, Object> queryResult;
-	private Long groupId;
+	private String groupId;
 
 	public QueryResultDataItem(long recordId, int querySize) {
 		this.queryResult = new LinkedHashMap<>(querySize);
@@ -62,15 +62,18 @@ public class QueryResultDataItem implements DataSizeCountable {
 				size += ((DataSizeCountable) value).sizeOfData();
 			}
 		}
-		size += 8;
+		size += 4;
+		if (this.groupId != null) {
+			size += this.groupId.getBytes().length;
+		}
 		return size;
 	}
 
-	public Long getGroupId() {
+	public String getGroupId() {
 		return groupId;
 	}
 
-	public QueryResultDataItem setGroupId(Long groupId) {
+	public QueryResultDataItem setGroupId(String groupId) {
 		this.groupId = groupId;
 		return this;
 	}

@@ -28,9 +28,9 @@ public class SumValueQueryExecute extends BaseQueryExecute<Double> {
 			});
 
 	@Override
-	public void execute(final Object value, Long groupId) {
+	public void execute(final Object value, String groupId) {
 		if (StringUtils.isNumeric(value.toString())) {
-			final GroupFunData<BigDecimal, Integer> avgDatas = this.loadCache.getCache(getGroupIdStr(groupId));
+			final GroupFunData<BigDecimal, Integer> avgDatas = this.loadCache.getCache(check(groupId));
 			avgDatas.safeSetDatas(new DoInLockCallback<BigDecimal, Integer>() {
 				@Override
 				public void doInLock(BigDecimal data1, Integer data2) {
@@ -42,8 +42,8 @@ public class SumValueQueryExecute extends BaseQueryExecute<Double> {
 	}
 
 	@Override
-	public Double end(Long groupId) {
-		TwoTuple<BigDecimal, Integer> safeReadDatas = this.loadCache.getCache(getGroupIdStr(groupId)).safeReadDatas();
+	public Double end(String groupId) {
+		TwoTuple<BigDecimal, Integer> safeReadDatas = this.loadCache.getCache(check(groupId)).safeReadDatas();
 		return safeReadDatas.first.doubleValue();
 	}
 

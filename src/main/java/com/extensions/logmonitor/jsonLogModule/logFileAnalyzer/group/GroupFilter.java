@@ -12,13 +12,13 @@ import java.util.Iterator;
  */
 public interface GroupFilter {
 
-	public void initGroupId(long groupId, GroupIdContact groupIdContact);
+	public void initGroupId(String groupId, GroupIdContact groupIdContact);
 
-	public void havingResult(long groupId, boolean havingResult);
+	public void havingResult(String groupId, boolean havingResult);
 
-	public GroupIdContact findGroupIdContact(long groupId);
+	public GroupIdContact findGroupIdContact(String groupId);
 
-	public boolean filter(long groupId);
+	public boolean filter(String groupId);
 
 	public Iterator<GroupIdContact> iterator();
 
