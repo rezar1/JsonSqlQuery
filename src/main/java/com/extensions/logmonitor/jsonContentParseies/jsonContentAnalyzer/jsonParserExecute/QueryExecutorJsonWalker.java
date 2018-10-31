@@ -134,7 +134,7 @@ public class QueryExecutorJsonWalker {
 				if (this.isGroup) {
 					GroupExecutor groupExecutor = this.queryExecutor.getGroupExecutor();
 					groupExecutor.doWhereConditionQuery(this.queryReusltDataItem, this.groupQueryCache);
-					groupExecutor.doHaving(this.queryReusltDataItem);
+					// groupExecutor.doHaving(this.queryReusltDataItem);
 				}
 				// 根据分组情况判断当前查询结果是否添加到最终结果集合中
 				if (!isExistsInGroup) {

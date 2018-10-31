@@ -66,6 +66,7 @@ public class QueryExecutor {
 				this.orderExecutor.executeSort();
 				this.dataCache.setOrderByDataCache(this.orderExecutor.getSingleOrderByDataCache());
 			} else if (this.groupExecutor != null && this.groupExecutor.needHaving()) {
+				this.groupExecutor.doHaving();
 				this.dataCache.setGroupHavingFilter(this.groupExecutor.getGroupFilter());
 			}
 			if (this.limitInfos != null) {

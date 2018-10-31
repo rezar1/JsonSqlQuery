@@ -6,7 +6,7 @@
 	</Appenders>
 	<Loggers>
 		<!-- 配置日志的根节点 -->
-		<root level="all">
+		<root level="info">
 			<appender-ref ref="stout" />
 		</root>
 	</Loggers>

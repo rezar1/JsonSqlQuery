@@ -87,7 +87,7 @@ public abstract class OptExecuteCommon<M> implements OptExecute {
 
 	@Override
 	public boolean OptSuccess(Object value) {
-		log.debug("{} and matchValue is:{} ", this.toString(), value);
+		// log.debug("{} and matchValue is:{} ", this.toString(), value);
 		boolean result = false;
 		if (this.matchValue == null) {
 			result = compareAsNull(value);

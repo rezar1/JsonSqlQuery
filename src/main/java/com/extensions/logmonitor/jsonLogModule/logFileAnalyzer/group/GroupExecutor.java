@@ -2,6 +2,7 @@ package com.extensions.logmonitor.jsonLogModule.logFileAnalyzer.group;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -12,7 +13,6 @@ import com.extensions.logmonitor.jsonLogModule.logFileAnalyzer.dataCache.selectD
 import com.extensions.logmonitor.jsonLogModule.logFileAnalyzer.select.QueryExecute;
 import com.extensions.logmonitor.jsonLogModule.logFileAnalyzer.whereCond.OptExecute;
 import com.extensions.logmonitor.jsonLogModule.logFileAnalyzer.whereCond.WhereCondition;
-import com.extensions.logmonitor.jsonLogModule.logFileAnalyzer.whereCond.optExecutes.EqOpt;
 import com.extensions.logmonitor.util.GenericsUtils;
 import com.extensions.logmonitor.util.TupleUtil;
 import com.extensions.logmonitor.util.TwoTuple;
@@ -71,7 +71,39 @@ public class GroupExecutor {
 			}
 		}
 		boolean checkWhereIsSuccess = this.groupWhereCondition.checkWhereIsSuccess(optExecuteResult);
-		this.groupFilter.havingResult(queryReusltDataItem.getGroupId(), !checkWhereIsSuccess);
+		if (checkWhereIsSuccess) {
+			this.groupFilter.havingResult(queryReusltDataItem.getGroupId(), false);
+		}
+	}
+
+	public void doHaving() {
+		if (!this.needHaving) {
+			return;
+		}
+		Map<OptExecute, Boolean> optExecuteResult = new HashMap<>();
+		Map<NeedParsePathMatcher, List<OptExecute>> optExecuteQuickVisitCache = this.groupWhereCondition
+				.getOptExecuteQuickVisitCache2();
+		Iterator<GroupIdContact> iterator = this.groupFilter.iterator();
+		while (iterator.hasNext()) {
+			GroupIdContact next = iterator.next();
+			String groupId = next.getGroupId();
+			for (List<OptExecute> optExecutes : optExecuteQuickVisitCache.values()) {
+				for (OptExecute optExecute : optExecutes) {
+					Object value = this.havingOptExecuteToQueryMapper.get(optExecute).end(groupId);
+					boolean optSuccess = checkOptExecuteForGroupCondition(optExecute, value);
+					// log.info("optExecuteType:{} optExecute :{} and value:{}
+					// and optSuccess:{}",
+					// optExecute.getClass().getSimpleName(), optExecute, value,
+					// optSuccess);
+					optExecuteResult.put(optExecute, optSuccess);
+				}
+			}
+			boolean checkWhereIsSuccess = this.groupWhereCondition.checkWhereIsSuccess(optExecuteResult);
+			if (checkWhereIsSuccess) {
+				next.setNeedRemove(false);
+			}
+		}
+
 	}
 
 	/**
@@ -81,15 +113,14 @@ public class GroupExecutor {
 	 */
 	private boolean checkOptExecuteForGroupCondition(OptExecute optExecute, Object value) {
 		boolean optSuccess = optExecute.OptSuccess(value);
-		if (!(optExecute instanceof EqOpt)) {
-			return !optSuccess;
-		}
+		// if (!(optExecute instanceof EqOpt)) {
+		// return !optSuccess;
+		// }
 		return optSuccess;
 	}
 
 	public TwoTuple<Boolean, String> putQueryResultDataItem(QueryResultDataItem queryResultDataItem) {
 		Map<String, Object> queryResult = queryResultDataItem.getQueryResult();
-		// GroupByKey gb = new GroupByKey();
 		StringBuilder simpleMark = new StringBuilder();
 		// group by 里面的字段一定需要包含在select 列表里面
 		for (GroupByItem groupByItem : this.groupByPaths) {
@@ -97,11 +128,9 @@ public class GroupExecutor {
 			if (groupByItem.getValueConvert() != null) {
 				object = groupByItem.getValueConvert().convert(object);
 			}
-			// gb.addGroupByFieldValue(object);
 			simpleMark.append(object == null ? "" : object.toString()).append("_");
 		}
 		String groupIdStr = GenericsUtils.string2MD5(GenericsUtils.deleteLastCharToString(simpleMark));
-		// Long groupId = gb.getHashValue();
 		GroupIdContact groupIdContact = null;
 		boolean isHasExists = false;
 		groupIdContact = this.groupFilter.findGroupIdContact(groupIdStr);

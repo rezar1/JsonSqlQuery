@@ -895,6 +895,7 @@ public class GenericsUtils {
 	public static <T> T[] createArray(Class<T> compentType, int size) {
 		return (T[]) Array.newInstance(compentType, size);
 	}
+	
 
 	public static String string2MD5(String inStr) {
 		MessageDigest md5 = null;

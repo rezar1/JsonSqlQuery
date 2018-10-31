@@ -15,7 +15,7 @@ import org.javastack.kvstore.holders.DataHolder;
 public class GroupIdContact extends DataHolder<GroupIdContact> implements Comparable<GroupIdContact> {
 
 	private long recordId;
-	private boolean needRemove;
+	private boolean needRemove = true;
 
 	private String groupId;
 
